@@ -150,8 +150,6 @@
   .mc.hypo-win     { background: #14532d; border-color: #22c55e; }
   .mc.hypo-correct { background: #22c55e; border-color: #4ade80; color: #fff; }
   .mc.hypo-correct .tname { color: #fff; }
-  .mc.hypo-loss,
-  .mc.hypo-wrong   { background: #450a0a; border-color: #ef4444; }
   .mc.tbd { cursor: default; opacity: 0.35; }
   .mc.tbd:hover { border-color: var(--border); }
 
@@ -386,11 +384,11 @@ function mcClasses(displayMatch, ti, actualMatch, hypothetical) {
     if (actualMatch?.winner !== null) {
       const pickName = displayMatch.teams[displayMatch.winner].name;
       const actualName = actualMatch.teams[actualMatch.winner].name;
-      return 'mc' + (pickName === actualName ? ' hypo-correct' : ' hypo-wrong');
+      if (pickName === actualName) return 'mc hypo-correct';
     }
     return 'mc hypo-win';
   }
-  return 'mc hypo-loss';
+  return 'mc';
 }
 
 function applyActualData(data) {
