@@ -8,12 +8,12 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg:      #f0f2f5;
-    --surface: #ffffff;
-    --border:  #d1d5db;
-    --text:    #1a1f2e;
-    --muted:   #6b7280;
-    --accent:  #1a6feb;
+    --bg:      #12151c;
+    --surface: #1e2433;
+    --border:  #3a4254;
+    --text:    #e8ecf1;
+    --muted:   #9aa3b5;
+    --accent:  #4d9bff;
     --CARD-H:  38px;
     --GAP-W:   28px;
   }
@@ -22,12 +22,12 @@
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: auto; }
 
   header {
-    background: linear-gradient(135deg, #e8edf5 0%, #f0f2f5 55%, #e8edf5 100%);
+    background: linear-gradient(135deg, #1a2030 0%, #12151c 55%, #1a2030 100%);
     border-bottom: 3px solid var(--accent);
     padding: 14px 22px 11px;
     display: flex; align-items: center; gap: 13px;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
   }
   header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(16px,2.5vw,28px); letter-spacing: 3px; color: var(--accent); line-height: 1; }
   header p  { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
@@ -37,13 +37,13 @@
   .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-accent { background: var(--accent); color: #fff; font-weight: 700; }
-  .btn-accent:hover { background: #1558c0; color: #fff; }
+  .btn-accent:hover { background: #3a85e0; color: #fff; }
 
   /* Leaderboard (center bottom) */
   .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: auto; padding-top: 18px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
   .leaderboard { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 1fr) minmax(72px, 1.4fr) 38px; gap: 8px; align-items: center; }
+  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 0.55fr) minmax(140px, 3fr) 40px; gap: 8px; align-items: center; }
   .lb-rank {
     font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
     font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
@@ -70,8 +70,8 @@
   .lb-bar-track {
     position: relative;
     height: 26px;
-    background: #eef1f5;
-    border: 1px solid #c5cdd8;
+    background: #2a3142;
+    border: 1px solid #4a5568;
     border-radius: 2px;
     overflow: hidden;
   }
@@ -83,8 +83,8 @@
       to right,
       transparent 0,
       transparent calc(25% - 0.5px),
-      rgba(0, 0, 0, 0.07) calc(25% - 0.5px),
-      rgba(0, 0, 0, 0.07) 25%
+      rgba(255, 255, 255, 0.08) calc(25% - 0.5px),
+      rgba(255, 255, 255, 0.08) 25%
     );
     pointer-events: none;
   }
@@ -146,12 +146,12 @@
   }
   .mc:first-child { border-radius: 4px 4px 0 0; border-bottom: none; }
   .mc:last-child  { border-radius: 0 0 4px 4px; }
-  .mc.picked { border-color: #374151; }
-  .mc.hypo-win     { background: #dcfce7; border-color: #16a34a; }
-  .mc.hypo-correct { background: #22c55e; border-color: #15803d; color: #fff; }
+  .mc.picked { border-color: #9ca3af; }
+  .mc.hypo-win     { background: #14532d; border-color: #22c55e; }
+  .mc.hypo-correct { background: #22c55e; border-color: #4ade80; color: #fff; }
   .mc.hypo-correct .tname { color: #fff; }
   .mc.hypo-loss,
-  .mc.hypo-wrong   { background: #fee2e2; border-color: #ef4444; }
+  .mc.hypo-wrong   { background: #450a0a; border-color: #ef4444; }
   .mc.tbd { cursor: default; opacity: 0.35; }
   .mc.tbd:hover { border-color: var(--border); }
 
@@ -167,11 +167,11 @@
   .flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
   .tname { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; color: var(--text); flex: 1; }
   .half.right .tname { text-align: right; }
-  .pick-check { font-size: 9px; color: #374151; flex-shrink: 0; }
+  .pick-check { font-size: 9px; color: #9ca3af; flex-shrink: 0; }
   .match-date { font-size:9px; color:var(--muted); letter-spacing:0.3px; text-align:center; padding:2px 0 2px; opacity:0.8; }
-  .match-date.tomorrow { color: #ea580c; opacity: 1; font-weight: 600; }
+  .match-date.tomorrow { color: #fb923c; opacity: 1; font-weight: 600; }
   .match-pair.tomorrow,
-  .match-block.tomorrow { outline: 2.5px solid #ea580c; outline-offset: 2px; border-radius: 5px; }
+  .match-block.tomorrow { outline: 2.5px solid #fb923c; outline-offset: 2px; border-radius: 5px; }
 
   /* Gap cols */
   .gap-col, .final-gap { flex-shrink: 0; position: relative; overflow: visible; align-self: stretch; height: 100%; }
@@ -180,12 +180,12 @@
   .gap-col svg, .final-gap svg { position: absolute; top: 0; left: 0; overflow: visible; }
 
   /* Center */
-  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 400px; flex-shrink: 0; padding: 12px 8px 0; height: 100%; align-self: stretch; }
+  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 500px; flex-shrink: 0; padding: 12px 8px 0; height: 100%; align-self: stretch; }
   .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 10px; align-self: stretch; }
-  .champ-card { background: linear-gradient(145deg,#f0fdf4,#dcfce7); border: 2px solid #16a34a; border-radius: 10px; padding: 16px 10px; text-align: center; box-shadow: 0 0 20px rgba(22,163,74,0.15); width: 100%; }
+  .champ-card { background: linear-gradient(145deg,#1a2e1f,#152418); border: 2px solid #22c55e; border-radius: 10px; padding: 16px 10px; text-align: center; box-shadow: 0 0 20px rgba(34,197,94,0.2); width: 100%; }
   .champ-trophy { font-size: 28px; }
   .champ-flag   { font-size: 24px; margin-top: 5px; }
-  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; color: #15803d; margin-top: 3px; }
+  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; color: #4ade80; margin-top: 3px; }
   .champ-empty  { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
   /* Toast */
@@ -290,20 +290,20 @@ const ROUND_LABELS = ["Round of 32","Round of 16","Quarter-Finals","Semi-Finals"
 const COUNTS_SIDE  = [8, 4, 2, 1];
 
 const R32_SCHEDULE = {
-  left:  ["Jun 28, 12pm","Jun 29, 1:30pm","Jun 30, 2pm","Jun 29, 10am","Jul 1, 1pm","Jul 1, 5pm","Jul 2, 12pm","Jul 2, 4pm"],
+  left:  ["Jun 28, 12pm","Jun 29, 6pm","Jun 29, 1:30pm","Jun 30, 2pm","Jul 1, 1pm","Jul 1, 5pm","Jul 2, 12pm","Jul 2, 4pm"],
   right: ["Jun 29, 10am","Jun 30, 10am","Jun 30, 6pm","Jul 1, 9am","Jul 2, 8pm","Jul 3, 6:30pm","Jul 3, 11am","Jul 3, 3pm"],
 };
 
 // R16: left pairs (mi=0..3), right pairs (mi=0..3) — all PT
 const R16_SCHEDULE = {
-  left:  ["Jul 4, 10am","Jul 4, 2pm","Jul 5, 5pm","Jul 5, 1pm"],
-  right: ["Jul 6, 5pm","Jul 6, 12pm","Jul 7, 9am","Jul 7, 1pm"],
+  left:  ["Jul 4, 10am","Jul 4, 2pm","Jul 6, 2pm","Jul 6, 12pm"],
+  right: ["Jul 5, 1pm","Jul 5, 5pm","Jul 7, 1pm","Jul 7, 9am"],
 };
 
 // QF: left (mi=0..1), right (mi=0..1) — all PT
 const QF_SCHEDULE = {
-  left:  ["Jul 9, 1pm","Jul 10, 2pm"],
-  right: ["Jul 10, 12pm","Jul 11, 6pm"],
+  left:  ["Jul 9, 1pm","Jul 10, 12pm"],
+  right: ["Jul 11, 2pm","Jul 11, 6pm"],
 };
 
 // SF: left (mi=0), right (mi=0) — all PT
