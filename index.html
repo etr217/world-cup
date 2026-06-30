@@ -150,6 +150,7 @@
   .mc.hypo-win     { background: #14532d; border-color: #22c55e; }
   .mc.hypo-correct { background: #22c55e; border-color: #4ade80; color: #fff; }
   .mc.hypo-correct .tname { color: #fff; }
+  .mc.hypo-loss { background: #450a0a; border-color: #ef4444; }
   .mc.tbd { cursor: default; opacity: 0.35; }
   .mc.tbd:hover { border-color: var(--border); }
 
@@ -167,9 +168,9 @@
   .half.right .tname { text-align: right; }
   .pick-check { font-size: 9px; color: #9ca3af; flex-shrink: 0; }
   .match-date { font-size:9px; color:var(--muted); letter-spacing:0.3px; text-align:center; padding:2px 0 2px; opacity:0.8; }
-  .match-date.tomorrow { color: #fb923c; opacity: 1; font-weight: 600; }
-  .match-pair.tomorrow,
-  .match-block.tomorrow { outline: 2.5px solid #fb923c; outline-offset: 2px; border-radius: 5px; }
+  .match-date.today { color: #fb923c; opacity: 1; font-weight: 600; }
+  .match-pair.today,
+  .match-block.today { outline: 2.5px solid #fb923c; outline-offset: 2px; border-radius: 5px; }
 
   /* Gap cols */
   .gap-col, .final-gap { flex-shrink: 0; position: relative; overflow: visible; align-self: stretch; height: 100%; }
@@ -315,17 +316,16 @@ const THIRD_SCHEDULE   = "Jul 18, 2pm PT";
 const WC_YEAR = 2026;
 const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
 
-function isScheduleTomorrow(schedStr) {
+function isScheduleToday(schedStr) {
   const m = schedStr.match(/^([A-Za-z]+)\s+(\d+)/);
   if (!m) return false;
   const month = MONTHS[m[1]];
   if (month === undefined) return false;
   const gameDay = new Date(WC_YEAR, month, parseInt(m[2], 10));
   gameDay.setHours(0, 0, 0, 0);
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  return gameDay.getTime() === tomorrow.getTime();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return gameDay.getTime() === today.getTime();
 }
 
 function flag(name) { return (TEAM_META[name]||{}).flag||''; }
@@ -388,7 +388,7 @@ function mcClasses(displayMatch, ti, actualMatch, hypothetical) {
     }
     return 'mc hypo-win';
   }
-  return 'mc';
+  return 'mc hypo-loss';
 }
 
 function applyActualData(data) {
@@ -526,13 +526,13 @@ function renderBracket() {
   center.appendChild(cl);
 
   const finalDateEl = document.createElement('div');
-  finalDateEl.className = 'match-date' + (isScheduleTomorrow(FINAL_SCHEDULE) ? ' tomorrow' : '');
+  finalDateEl.className = 'match-date' + (isScheduleToday(FINAL_SCHEDULE) ? ' today' : '');
   finalDateEl.textContent = FINAL_SCHEDULE;
   center.appendChild(finalDateEl);
 
   const fc = document.createElement('div');
   fc.id = 'final-match';
-  fc.className = 'match-block' + (isScheduleTomorrow(FINAL_SCHEDULE) ? ' tomorrow' : '');
+  fc.className = 'match-block' + (isScheduleToday(FINAL_SCHEDULE) ? ' today' : '');
   fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:12px;';
   display.final.teams.forEach((team, ti) => {
     const isPicked = display.final.winner === ti;
@@ -575,13 +575,13 @@ function renderBracket() {
   center.appendChild(tl);
 
   const thirdDateEl = document.createElement('div');
-  thirdDateEl.className = 'match-date' + (isScheduleTomorrow(THIRD_SCHEDULE) ? ' tomorrow' : '');
+  thirdDateEl.className = 'match-date' + (isScheduleToday(THIRD_SCHEDULE) ? ' today' : '');
   thirdDateEl.textContent = THIRD_SCHEDULE;
   center.appendChild(thirdDateEl);
 
   const tm = display.third;
   const tc = document.createElement('div');
-  tc.className = 'match-block' + (isScheduleTomorrow(THIRD_SCHEDULE) ? ' tomorrow' : '');
+  tc.className = 'match-block' + (isScheduleToday(THIRD_SCHEDULE) ? ' today' : '');
   tc.style.cssText = 'display:flex;flex-direction:column;width:100%;';
   tm.teams.forEach((team, ti) => {
     const isPicked = tm.winner === ti;
@@ -666,13 +666,13 @@ function renderHalf(container, side, display, dots, hypothetical) {
       const sched = schedules[ri]?.[side]?.[mi];
       if (sched) {
         const dateEl = document.createElement('div');
-        dateEl.className = 'match-date' + (isScheduleTomorrow(sched) ? ' tomorrow' : '');
+        dateEl.className = 'match-date' + (isScheduleToday(sched) ? ' today' : '');
         dateEl.textContent = sched + ' PT';
         slot.appendChild(dateEl);
       }
 
       const pair = document.createElement('div');
-      pair.className = 'match-pair' + (sched && isScheduleTomorrow(sched) ? ' tomorrow' : '');
+      pair.className = 'match-pair' + (sched && isScheduleToday(sched) ? ' today' : '');
 
       const match = display[side][ri][mi];
       const actualMatch = results[side][ri][mi];
