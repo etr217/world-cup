@@ -1,0 +1,62 @@
+{
+  "bracketName": "Devo",
+  "left": [
+    [
+      {"teams":[{"name":"South Africa","abbr":"RSA","flag":"🇿🇦"},{"name":"Canada","abbr":"CAN","flag":"🇨🇦"}],"winner":1},
+      {"teams":[{"name":"Netherlands","abbr":"NED","flag":"🇳🇱"},{"name":"Morocco","abbr":"MAR","flag":"🇲🇦"}],"winner":1},
+      {"teams":[{"name":"Germany","abbr":"GER","flag":"🇩🇪"},{"name":"Paraguay","abbr":"PAR","flag":"🇵🇾"}],"winner":0},
+      {"teams":[{"name":"France","abbr":"FRA","flag":"🇫🇷"},{"name":"Sweden","abbr":"SWE","flag":"🇸🇪"}],"winner":0},
+      {"teams":[{"name":"Belgium","abbr":"BEL","flag":"🇧🇪"},{"name":"Senegal","abbr":"SEN","flag":"🇸🇳"}],"winner":0},
+      {"teams":[{"name":"USA","abbr":"USA","flag":"🇺🇸"},{"name":"Bosnia & Hz","abbr":"BIH","flag":"🇧🇦"}],"winner":1},
+      {"teams":[{"name":"Spain","abbr":"ESP","flag":"🇪🇸"},{"name":"Austria","abbr":"AUT","flag":"🇦🇹"}],"winner":0},
+      {"teams":[{"name":"Portugal","abbr":"POR","flag":"🇵🇹"},{"name":"Croatia","abbr":"CRO","flag":"🇭🇷"}],"winner":1}
+    ],
+    [
+      {"teams":[{"name":"Canada","abbr":"CAN","flag":"🇨🇦"},{"name":"Morocco","abbr":"MAR","flag":"🇲🇦"}],"winner":0},
+      {"teams":[{"name":"Germany","abbr":"GER","flag":"🇩🇪"},{"name":"France","abbr":"FRA","flag":"🇫🇷"}],"winner":1},
+      {"teams":[{"name":"Belgium","abbr":"BEL","flag":"🇧🇪"},{"name":"Bosnia & Hz","abbr":"BIH","flag":"🇧🇦"}],"winner":0},
+      {"teams":[{"name":"Spain","abbr":"ESP","flag":"🇪🇸"},{"name":"Croatia","abbr":"CRO","flag":"🇭🇷"}],"winner":1}
+    ],
+    [
+      {"teams":[{"name":"South Africa","abbr":"RSA","flag":"🇿🇦"},{"name":"France","abbr":"FRA","flag":"🇫🇷"}],"winner":1},
+      {"teams":[{"name":"Belgium","abbr":"BEL","flag":"🇧🇪"},{"name":"Croatia","abbr":"CRO","flag":"🇭🇷"}],"winner":1}
+    ],
+    [
+      {"teams":[{"name":"France","abbr":"FRA","flag":"🇫🇷"},{"name":"Croatia","abbr":"CRO","flag":"🇭🇷"}],"winner":0}
+    ]
+  ],
+  "right": [
+    [
+      {"teams":[{"name":"Brazil","abbr":"BRA","flag":"🇧🇷"},{"name":"Japan","abbr":"JPN","flag":"🇯🇵"}],"winner":0},
+      {"teams":[{"name":"Côte d'Ivoire","abbr":"CIV","flag":"🇨🇮"},{"name":"Norway","abbr":"NOR","flag":"🇳🇴"}],"winner":1},
+      {"teams":[{"name":"Mexico","abbr":"MEX","flag":"🇲🇽"},{"name":"Ecuador","abbr":"ECU","flag":"🇪🇨"}],"winner":0},
+      {"teams":[{"name":"England","abbr":"ENG","flag":"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},{"name":"DR Congo","abbr":"COD","flag":"🇨🇩"}],"winner":0},
+      {"teams":[{"name":"Switzerland","abbr":"SUI","flag":"🇨🇭"},{"name":"Algeria","abbr":"ALG","flag":"🇩🇿"}],"winner":1},
+      {"teams":[{"name":"Colombia","abbr":"COL","flag":"🇨🇴"},{"name":"Ghana","abbr":"GHA","flag":"🇬🇭"}],"winner":0},
+      {"teams":[{"name":"Australia","abbr":"AUS","flag":"🇦🇺"},{"name":"Egypt","abbr":"EGY","flag":"🇪🇬"}],"winner":0},
+      {"teams":[{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"},{"name":"Cabo Verde","abbr":"CPV","flag":"🇨🇻"}],"winner":0}
+    ],
+    [
+      {"teams":[{"name":"Brazil","abbr":"BRA","flag":"🇧🇷"},{"name":"Norway","abbr":"NOR","flag":"🇳🇴"}],"winner":0},
+      {"teams":[{"name":"Mexico","abbr":"MEX","flag":"🇲🇽"},{"name":"England","abbr":"ENG","flag":"🏴󠁧󠁢󠁥󠁮󠁧󠁿"}],"winner":1},
+      {"teams":[{"name":"Algeria","abbr":"ALG","flag":"🇩🇿"},{"name":"Colombia","abbr":"COL","flag":"🇨🇴"}],"winner":1},
+      {"teams":[{"name":"Australia","abbr":"AUS","flag":"🇦🇺"},{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"}],"winner":1}
+    ],
+    [
+      {"teams":[{"name":"Brazil","abbr":"BRA","flag":"🇧🇷"},{"name":"England","abbr":"ENG","flag":"🏴󠁧󠁢󠁥󠁮󠁧󠁿"}],"winner":0},
+      {"teams":[{"name":"Colombia","abbr":"COL","flag":"🇨🇴"},{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"}],"winner":1}
+    ],
+    [
+      {"teams":[{"name":"Brazil","abbr":"BRA","flag":"🇧🇷"},{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"}],"winner":1}
+    ]
+  ],
+  "final": {
+    "teams":[{"name":"France","abbr":"FRA","flag":"🇫🇷"},{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"}],
+    "winner":1
+  },
+  "third": {
+    "teams":[{"name":"Croatia","abbr":"CRO","flag":"🇭🇷"},{"name":"Brazil","abbr":"BRA","flag":"🇧🇷"}],
+    "winner":1
+  },
+  "champion":{"name":"Argentina","abbr":"ARG","flag":"🇦🇷"}
+}
