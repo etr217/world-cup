@@ -42,14 +42,20 @@
   /* Leaderboard (center bottom) */
   .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: auto; padding-top: 18px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
-  .leaderboard { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-  .lb-row { display: grid; grid-template-columns: 16px 10px 88px 1fr 32px; gap: 6px; align-items: center; }
-  .lb-rank { font-family: 'Bebas Neue', sans-serif; font-size: 14px; text-align: right; color: var(--muted); }
+  .leaderboard { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 1fr) minmax(72px, 1.4fr) 38px; gap: 8px; align-items: center; }
+  .lb-rank {
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+    font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
+  }
   .lb-rank.gold   { color: #f5c518; }
   .lb-rank.silver { color: #adb5bd; }
   .lb-rank.bronze { color: #cd7f32; }
-  .lb-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-  .lb-name { font-size: 11px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  .lb-dot  { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .lb-name {
+    font-size: 12px; font-weight: 700; color: var(--text);
+    line-height: 1.25; cursor: pointer; min-width: 0;
+  }
   .lb-name:hover { color: var(--accent); }
   .lb-row.active .lb-name { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
   .lb-back-btn {
@@ -63,7 +69,7 @@
   .lb-back-btn:hover { background: var(--accent); color: #fff; }
   .lb-bar-track {
     position: relative;
-    height: 20px;
+    height: 26px;
     background: #eef1f5;
     border: 1px solid #c5cdd8;
     border-radius: 2px;
@@ -94,11 +100,12 @@
     transition: width 0.35s ease;
   }
   .lb-score {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
     color: var(--text);
     text-align: right;
-    letter-spacing: 0.5px;
   }
   .legend-empty { color: var(--muted); font-style: italic; font-size: 12px; }
 
@@ -162,6 +169,9 @@
   .half.right .tname { text-align: right; }
   .pick-check { font-size: 9px; color: #374151; flex-shrink: 0; }
   .match-date { font-size:9px; color:var(--muted); letter-spacing:0.3px; text-align:center; padding:2px 0 2px; opacity:0.8; }
+  .match-date.tomorrow { color: #ea580c; opacity: 1; font-weight: 600; }
+  .match-pair.tomorrow,
+  .match-block.tomorrow { outline: 2.5px solid #ea580c; outline-offset: 2px; border-radius: 5px; }
 
   /* Gap cols */
   .gap-col, .final-gap { flex-shrink: 0; position: relative; overflow: visible; align-self: stretch; height: 100%; }
@@ -170,7 +180,7 @@
   .gap-col svg, .final-gap svg { position: absolute; top: 0; left: 0; overflow: visible; }
 
   /* Center */
-  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 300px; flex-shrink: 0; padding: 12px 6px 0; height: 100%; align-self: stretch; }
+  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 400px; flex-shrink: 0; padding: 12px 8px 0; height: 100%; align-self: stretch; }
   .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 10px; align-self: stretch; }
   .champ-card { background: linear-gradient(145deg,#f0fdf4,#dcfce7); border: 2px solid #16a34a; border-radius: 10px; padding: 16px 10px; text-align: center; box-shadow: 0 0 20px rgba(22,163,74,0.15); width: 100%; }
   .champ-trophy { font-size: 28px; }
@@ -304,6 +314,21 @@ const SF_SCHEDULE = {
 
 const FINAL_SCHEDULE   = "Jul 19, 12pm PT";
 const THIRD_SCHEDULE   = "Jul 18, 2pm PT";
+const WC_YEAR = 2026;
+const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+
+function isScheduleTomorrow(schedStr) {
+  const m = schedStr.match(/^([A-Za-z]+)\s+(\d+)/);
+  if (!m) return false;
+  const month = MONTHS[m[1]];
+  if (month === undefined) return false;
+  const gameDay = new Date(WC_YEAR, month, parseInt(m[2], 10));
+  gameDay.setHours(0, 0, 0, 0);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  return gameDay.getTime() === tomorrow.getTime();
+}
 
 function flag(name) { return (TEAM_META[name]||{}).flag||''; }
 function abbr(name) { return (TEAM_META[name]||{}).abbr||name.slice(0,3).toUpperCase(); }
@@ -503,11 +528,12 @@ function renderBracket() {
   center.appendChild(cl);
 
   const finalDateEl = document.createElement('div');
-  finalDateEl.className = 'match-date';
+  finalDateEl.className = 'match-date' + (isScheduleTomorrow(FINAL_SCHEDULE) ? ' tomorrow' : '');
   finalDateEl.textContent = FINAL_SCHEDULE;
   center.appendChild(finalDateEl);
 
   const fc = document.createElement('div');
+  fc.className = 'match-block' + (isScheduleTomorrow(FINAL_SCHEDULE) ? ' tomorrow' : '');
   fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:12px;';
   display.final.teams.forEach((team, ti) => {
     const isPicked = display.final.winner === ti;
@@ -550,12 +576,13 @@ function renderBracket() {
   center.appendChild(tl);
 
   const thirdDateEl = document.createElement('div');
-  thirdDateEl.className = 'match-date';
+  thirdDateEl.className = 'match-date' + (isScheduleTomorrow(THIRD_SCHEDULE) ? ' tomorrow' : '');
   thirdDateEl.textContent = THIRD_SCHEDULE;
   center.appendChild(thirdDateEl);
 
   const tm = display.third;
   const tc = document.createElement('div');
+  tc.className = 'match-block' + (isScheduleTomorrow(THIRD_SCHEDULE) ? ' tomorrow' : '');
   tc.style.cssText = 'display:flex;flex-direction:column;width:100%;';
   tm.teams.forEach((team, ti) => {
     const isPicked = tm.winner === ti;
@@ -640,13 +667,13 @@ function renderHalf(container, side, display, dots, hypothetical) {
       const sched = schedules[ri]?.[side]?.[mi];
       if (sched) {
         const dateEl = document.createElement('div');
-        dateEl.className = 'match-date';
+        dateEl.className = 'match-date' + (isScheduleTomorrow(sched) ? ' tomorrow' : '');
         dateEl.textContent = sched + ' PT';
         slot.appendChild(dateEl);
       }
 
       const pair = document.createElement('div');
-      pair.className = 'match-pair';
+      pair.className = 'match-pair' + (sched && isScheduleTomorrow(sched) ? ' tomorrow' : '');
 
       const match = display[side][ri][mi];
       const actualMatch = results[side][ri][mi];
