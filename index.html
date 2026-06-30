@@ -533,6 +533,7 @@ function renderBracket() {
   center.appendChild(finalDateEl);
 
   const fc = document.createElement('div');
+  fc.id = 'final-match';
   fc.className = 'match-block' + (isScheduleTomorrow(FINAL_SCHEDULE) ? ' tomorrow' : '');
   fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:12px;';
   display.final.teams.forEach((team, ti) => {
@@ -736,18 +737,24 @@ function drawHypotheticalLines(display) {
       if (!dstSlot) continue;
       const dstMcs = dstSlot.querySelectorAll('.mc');
       if (dstMcs.length < 2) continue;
-      const dstY0 = midY(dstMcs[0], gapRect), dstY1 = midY(dstMcs[1], gapRect);
 
       [0, 1].forEach(arm => {
-        const srcMi = mi * 2 + arm, dstY = arm === 0 ? dstY0 : dstY1;
+        const srcMi = mi * 2 + arm;
         const rm = display[side][prevRi][srcMi];
         if (rm.winner === null) return;
+
+        const winnerName = rm.teams[rm.winner].name;
+        const destMatch = display[side][ri][mi];
+        if (destMatch.teams[arm].name !== winnerName) return;
+        if (destMatch.winner === null) return;
+        if (destMatch.teams[destMatch.winner].name !== winnerName) return;
 
         const srcSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${prevRi}"][data-mi="${srcMi}"]`);
         if (!srcSlot) return;
         const srcMcs = srcSlot.querySelectorAll('.mc');
         if (!srcMcs[rm.winner]) return;
         const srcY = midY(srcMcs[rm.winner], gapRect);
+        const dstY = midY(dstMcs[destMatch.winner], gapRect);
 
         path(svg, fromX, srcY, xMid, srcY, xMid, dstY, toX, dstY, HYPO_LINE_COLOR, 2);
       });
@@ -763,15 +770,22 @@ function drawHypotheticalLines(display) {
     const finalTi = side === 'left' ? 0 : 1;
     const fromX = isRight ? x1 : x0, toX = isRight ? x0 : x1;
 
-    const sfSlot = document.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
-    const allFinalRows = document.querySelectorAll('.center-col .mc');
-    if (!sfSlot || !allFinalRows[finalTi]) return;
+    const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
+    const finalMcs = document.querySelectorAll('#final-match > .mc');
+    if (!sfSlot || !finalMcs[finalTi]) return;
     const sfMcs = sfSlot.querySelectorAll('.mc');
 
     const rm = display[side][sfRi][0];
     if (rm.winner === null || !sfMcs[rm.winner]) return;
+    const winnerName = rm.teams[rm.winner].name;
+
+    const finalMatch = display.final;
+    if (finalMatch.teams[finalTi].name !== winnerName) return;
+    if (finalMatch.winner === null) return;
+    if (finalMatch.teams[finalMatch.winner].name !== winnerName) return;
+
     const srcY = midY(sfMcs[rm.winner], gapRect);
-    const dstY = midY(allFinalRows[finalTi], gapRect);
+    const dstY = midY(finalMcs[finalMatch.winner], gapRect);
 
     path(svg, fromX, srcY, xMid, srcY, xMid, dstY, toX, dstY, HYPO_LINE_COLOR, 2);
   });
@@ -833,9 +847,9 @@ function drawAllLines() {
     const finalTi = side==='left'?0:1;
     const fromX = isRight?x1:x0, toX = isRight?x0:x1;
 
-    const sfSlot = document.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
-    const allFinalRows = document.querySelectorAll('.center-col .mc');
-    if (!sfSlot || !allFinalRows[finalTi]) return;
+    const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
+    const finalMcs = document.querySelectorAll('#final-match > .mc');
+    if (!sfSlot || !finalMcs[finalTi]) return;
     const sfMcs = sfSlot.querySelectorAll('.mc');
 
     // Only draw if actual result has a SF winner
@@ -843,7 +857,7 @@ function drawAllLines() {
     if (rm.winner === null || !sfMcs[rm.winner]) return;
     const actualWinnerName = rm.teams[rm.winner].name;
     const srcY = midY(sfMcs[rm.winner], gapRect);
-    const dstY = midY(allFinalRows[finalTi], gapRect);
+    const dstY = midY(finalMcs[finalTi], gapRect);
 
     const pickers = brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName);
     if (!pickers.length) return;
