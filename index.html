@@ -898,6 +898,15 @@ function line(svg,x1,y1,x2,y2,stroke,w) {
 const BRACKET_DIR = 'brackets/';
 const ACTUAL_FILE = 'actual';
 
+function manifestFile() {
+  const param = new URLSearchParams(location.search).get('manifest');
+  if (param === 'local') return 'manifest.local.json';
+  if (param === 'prod') return 'manifest.json';
+  const host = location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') return 'manifest.local.json';
+  return 'manifest.json';
+}
+
 async function loadActualResults() {
   try {
     const res = await fetch(BRACKET_DIR + ACTUAL_FILE);
@@ -928,7 +937,7 @@ async function loadAllBrackets() {
   try {
     await loadActualResults();
 
-    const manifestRes = await fetch(BRACKET_DIR + 'manifest.json');
+    const manifestRes = await fetch(BRACKET_DIR + manifestFile());
     if (!manifestRes.ok) throw new Error('manifest');
     const files = (await manifestRes.json()).filter(f => f !== ACTUAL_FILE);
 

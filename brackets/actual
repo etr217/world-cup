@@ -287,7 +287,7 @@
             "iso": "no"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -402,9 +402,10 @@
             "iso": "br"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Norway",
+            "abbr": "Norway",
+            "flag": "🇳🇴",
+            "iso": "no"
           }
         ],
         "winner": null
