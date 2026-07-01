@@ -322,7 +322,7 @@
             "iso": "cd"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -420,9 +420,10 @@
             "iso": "mx"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "England",
+            "abbr": "England",
+            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "iso": "gb-eng"
           }
         ],
         "winner": null
