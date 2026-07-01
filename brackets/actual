@@ -305,7 +305,7 @@
             "iso": "ec"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -414,9 +414,10 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Mexico",
+            "abbr": "Mexico",
+            "flag": "🇲🇽",
+            "iso": "mx"
           },
           {
             "name": "TBD",
