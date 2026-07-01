@@ -67,7 +67,7 @@
             "iso": "se"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -165,9 +165,10 @@
             "iso": "py"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "France",
+            "abbr": "France",
+            "flag": "🇫🇷",
+            "iso": "fr"
           }
         ],
         "winner": null
