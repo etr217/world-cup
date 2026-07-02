@@ -476,19 +476,27 @@ function renderLegend() {
   const scored = brackets.map((b, i) => ({ ...b, i, pts: scoreFor(b) }))
     .sort((a, b) => b.pts - a.pts);
 
+  let place = 1;
+  const ranked = scored.map((b, i) => {
+    if (i > 0 && b.pts < scored[i - 1].pts) place = i + 1;
+    return { ...b, place };
+  });
+
   const maxPts = Math.max(...scored.map(b => b.pts), 1);
-  const rankColors = ['gold', 'silver', 'bronze'];
+  const rankColors = { 1: 'gold', 2: 'silver', 3: 'bronze' };
   const backBtn = viewingBracketIdx !== null
     ? '<button type="button" class="lb-back-btn" onclick="showActualBracket()">← Actual results</button>'
     : '';
 
   bar.innerHTML = `${backBtn}<div class="leaderboard">${
-    scored.map((b, rank) => {
+    ranked.map((b) => {
       const pct = maxPts > 0 ? (b.pts / maxPts) * 100 : 0;
       const active = viewingBracketIdx === b.i ? ' active' : '';
+      const placeLabel = b.place <= 3 ? b.place : '';
+      const placeClass = rankColors[b.place] || '';
       return `
         <div class="lb-row${active}">
-          <div class="lb-rank ${rankColors[rank]||''}">${rank < 3 ? rank + 1 : ''}</div>
+          <div class="lb-rank ${placeClass}">${placeLabel}</div>
           <div class="lb-dot" style="${colorBgStyle(b.color)}"></div>
           <div class="lb-name" onclick="showBracket(${b.i})" title="View ${b.name}'s bracket">${b.name}</div>
           <div class="lb-bar-track">
