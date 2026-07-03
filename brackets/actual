@@ -135,7 +135,7 @@
             "iso": "hr"
           }
         ],
-        "winner": null
+        "winner": 0
       }
     ],
     [
@@ -199,9 +199,10 @@
             "iso": "es"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Portugal",
+            "abbr": "Portugal",
+            "flag": "🇵🇹",
+            "iso": "pt"
           }
         ],
         "winner": null
