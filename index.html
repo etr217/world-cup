@@ -43,7 +43,7 @@
   .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: auto; padding-top: 18px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
   .leaderboard { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 0.55fr) minmax(140px, 3fr) 40px; gap: 8px; align-items: center; }
+  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 0.55fr) minmax(120px, 3fr) 72px; gap: 8px; align-items: center; }
   .lb-rank {
     font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
     font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
@@ -106,7 +106,9 @@
     font-variant-numeric: tabular-nums;
     color: var(--text);
     text-align: right;
+    white-space: nowrap;
   }
+  .lb-max { font-size: 12px; font-weight: 600; color: var(--muted); }
   .legend-empty { color: var(--muted); font-style: italic; font-size: 12px; }
 
   /* Bracket layout */
@@ -465,6 +467,66 @@ function scoreFor(b) {
   return pts;
 }
 
+// Teams that have already lost in the actual results (and are thus eliminated)
+function eliminatedTeams() {
+  const set = new Set();
+  const addLoser = (m) => {
+    if (!m || m.winner === null || m.winner === undefined) return;
+    const loser = m.teams[m.winner === 0 ? 1 : 0];
+    if (loser && loser.name && loser.name !== 'TBD') set.add(loser.name);
+  };
+  ['left','right'].forEach(side => {
+    COUNTS_SIDE.forEach((count, ri) => {
+      for (let mi = 0; mi < count; mi++) addLoser(results[side][ri][mi]);
+    });
+  });
+  addLoser(results.final);
+  return set;
+}
+
+// Red → yellow → green gradient across the range of max scores (lowest red, highest green)
+function maxScoreColor(val, lo, hi) {
+  const t = hi > lo ? (val - lo) / (hi - lo) : 1;
+  const hue = t * 120; // 0 = red, 120 = green
+  return `hsl(${hue}, 70%, 60%)`;
+}
+
+// Best possible score: every still-alive pick wins whenever the match is undecided
+function maxScoreFor(b, elim) {
+  let pts = 0;
+  const stillPossible = (pick) => pick && pick !== 'TBD' && !elim.has(pick);
+  ['left','right'].forEach(side => {
+    COUNTS_SIDE.forEach((count, ri) => {
+      const ppw = ROUND_POINTS[ri];
+      for (let mi = 0; mi < count; mi++) {
+        const actual = results[side][ri][mi];
+        const pick = getBracketWinner(b.data, side, ri, mi);
+        if (actual.winner !== null) {
+          if (pick === actual.teams[actual.winner].name) pts += ppw;
+        } else if (stillPossible(pick)) {
+          pts += ppw;
+        }
+      }
+    });
+  });
+  // Final
+  const finalPick = getBracketFinalWinner(b.data);
+  if (results.final.winner !== null) {
+    if (finalPick === results.final.teams[results.final.winner].name) pts += FINAL_POINTS;
+  } else if (stillPossible(finalPick)) {
+    pts += FINAL_POINTS;
+  }
+  // Third place
+  let thirdPick = null;
+  try { const t = b.data.third; if (t && t.winner !== null) thirdPick = t.teams[t.winner].name; } catch {}
+  if (results.third.winner !== null) {
+    if (thirdPick && thirdPick === results.third.teams[results.third.winner].name) pts += THIRD_POINTS;
+  } else if (stillPossible(thirdPick)) {
+    pts += THIRD_POINTS;
+  }
+  return pts;
+}
+
 function renderLegend() {
   const bar = document.getElementById('legendBar');
   if (!bar) return;
@@ -473,7 +535,8 @@ function renderLegend() {
     return;
   }
 
-  const scored = brackets.map((b, i) => ({ ...b, i, pts: scoreFor(b) }))
+  const elim = eliminatedTeams();
+  const scored = brackets.map((b, i) => ({ ...b, i, pts: scoreFor(b), maxPts: maxScoreFor(b, elim) }))
     .sort((a, b) => b.pts - a.pts);
 
   let place = 1;
@@ -483,6 +546,8 @@ function renderLegend() {
   });
 
   const maxPts = Math.max(...scored.map(b => b.pts), 1);
+  const maxVals = scored.map(b => b.maxPts);
+  const loMax = Math.min(...maxVals), hiMax = Math.max(...maxVals);
   const rankColors = { 1: 'gold', 2: 'silver', 3: 'bronze' };
   const backBtn = viewingBracketIdx !== null
     ? '<button type="button" class="lb-back-btn" onclick="showActualBracket()">← Actual results</button>'
@@ -502,7 +567,7 @@ function renderLegend() {
           <div class="lb-bar-track">
             <div class="lb-bar-fill" style="width:${pct}%;${colorBgStyle(b.color)}"></div>
           </div>
-          <div class="lb-score">${b.pts}</div>
+          <div class="lb-score">${b.pts} <span class="lb-max" style="color:${maxScoreColor(b.maxPts, loMax, hiMax)}">(${b.maxPts})</span></div>
         </div>`;
     }).join('')
   }</div>`;
@@ -734,7 +799,7 @@ function drawHypotheticalLines(display) {
     const side = gap.dataset.side, ri = parseInt(gap.dataset.ri), prevRi = ri - 1;
     const isRight = side === 'right';
     const gapRect = gap.getBoundingClientRect();
-    const svg = makeSVG(gap, gapRect);
+    const { svg } = makeSVG(gap, gapRect);
     const x0 = 0, x1 = gapRect.width, xMid = gapRect.width / 2;
     const fromX = isRight ? x1 : x0, toX = isRight ? x0 : x1;
 
@@ -771,10 +836,7 @@ function drawHypotheticalLines(display) {
     const side = gap.dataset.side, isRight = side === 'right';
     const sfRi = COUNTS_SIDE.length - 1;
     const gapRect = gap.getBoundingClientRect();
-    const svg = makeSVG(gap, gapRect);
-    const x0 = 0, x1 = gapRect.width, xMid = gapRect.width / 2;
     const finalTi = side === 'left' ? 0 : 1;
-    const fromX = isRight ? x1 : x0, toX = isRight ? x0 : x1;
 
     const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
     const finalMcs = document.querySelectorAll('#final-match > .mc');
@@ -790,10 +852,14 @@ function drawHypotheticalLines(display) {
     if (finalMatch.winner === null) return;
     if (finalMatch.teams[finalMatch.winner].name !== winnerName) return;
 
-    const srcY = midY(sfMcs[rm.winner], gapRect);
-    const dstY = midY(finalMcs[finalMatch.winner], gapRect);
+    const srcMc = sfMcs[rm.winner];
+    const dstMc = finalMcs[finalTi];
+    const srcY = midY(srcMc, gapRect);
+    const dstY = midY(dstMc, gapRect);
+    const { fromX, toX, xMid } = finalGapX(isRight, srcMc, dstMc, gapRect);
+    const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
 
-    path(svg, fromX, srcY, xMid, srcY, xMid, dstY, toX, dstY, HYPO_LINE_COLOR, 2);
+    path(svg, fromX - xOff, srcY, xMid - xOff, srcY, xMid - xOff, dstY, toX - xOff, dstY, HYPO_LINE_COLOR, 2);
   });
 }
 
@@ -805,7 +871,7 @@ function drawAllLines() {
     const side = gap.dataset.side, ri = parseInt(gap.dataset.ri), prevRi = ri-1;
     const isRight = side==='right';
     const gapRect = gap.getBoundingClientRect();
-    const svg = makeSVG(gap, gapRect);
+    const { svg } = makeSVG(gap, gapRect);
     const x0=0, x1=gapRect.width, xMid=gapRect.width/2;
     const fromX = isRight?x1:x0, toX = isRight?x0:x1;
 
@@ -848,10 +914,7 @@ function drawAllLines() {
     const side = gap.dataset.side, isRight = side==='right';
     const sfRi = COUNTS_SIDE.length-1;
     const gapRect = gap.getBoundingClientRect();
-    const svg = makeSVG(gap, gapRect);
-    const x0=0, x1=gapRect.width, xMid=gapRect.width/2;
     const finalTi = side==='left'?0:1;
-    const fromX = isRight?x1:x0, toX = isRight?x0:x1;
 
     const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
     const finalMcs = document.querySelectorAll('#final-match > .mc');
@@ -862,8 +925,12 @@ function drawAllLines() {
     const rm = results[side][sfRi][0];
     if (rm.winner === null || !sfMcs[rm.winner]) return;
     const actualWinnerName = rm.teams[rm.winner].name;
-    const srcY = midY(sfMcs[rm.winner], gapRect);
-    const dstY = midY(finalMcs[finalTi], gapRect);
+    const srcMc = sfMcs[rm.winner];
+    const dstMc = finalMcs[finalTi];
+    const srcY = midY(srcMc, gapRect);
+    const dstY = midY(dstMc, gapRect);
+    const { fromX, toX, xMid } = finalGapX(isRight, srcMc, dstMc, gapRect);
+    const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
 
     const pickers = brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName);
     if (!pickers.length) return;
@@ -871,17 +938,36 @@ function drawAllLines() {
     const totalOff = (pickers.length - 1) * spread;
     pickers.forEach((b, i) => {
       const off = -totalOff/2 + i*spread;
-      path(svg, fromX, srcY+off, xMid, srcY+off, xMid, dstY+off, toX, dstY+off, strokeColor(b.color), 2);
+      path(svg, fromX - xOff, srcY + off, xMid - xOff, srcY + off, xMid - xOff, dstY + off, toX - xOff, dstY + off, strokeColor(b.color), 2);
     });
   });
 }
 
 function midY(el, gapRect) { const r=el.getBoundingClientRect(); return (r.top+r.bottom)/2-gapRect.top; }
+function mcEdgeX(el, gapRect, edge) {
+  const r = el.getBoundingClientRect();
+  return (edge === 'left' ? r.left : r.right) - gapRect.left;
+}
 function makeSVG(gap, gapRect) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.setAttribute('width', gapRect.width); svg.setAttribute('height', gapRect.height);
   Object.assign(svg.style,{position:'absolute',top:'0',left:'0',overflow:'visible'});
-  gap.innerHTML=''; gap.appendChild(svg); return svg;
+  gap.innerHTML=''; gap.appendChild(svg); return { svg, xOff: 0 };
+}
+function makeSpanSVG(gap, gapRect, fromX, toX) {
+  const minX = Math.min(fromX, toX, 0);
+  const maxX = Math.max(fromX, toX, gapRect.width);
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width', maxX - minX);
+  svg.setAttribute('height', gapRect.height);
+  Object.assign(svg.style,{position:'absolute',top:'0',left:minX+'px',overflow:'visible'});
+  gap.innerHTML=''; gap.appendChild(svg);
+  return { svg, xOff: minX };
+}
+function finalGapX(isRight, srcMc, dstMc, gapRect) {
+  const fromX = mcEdgeX(srcMc, gapRect, isRight ? 'left' : 'right');
+  const toX = mcEdgeX(dstMc, gapRect, isRight ? 'right' : 'left');
+  return { fromX, toX, xMid: (fromX + toX) / 2 };
 }
 // Draw a connected elbow path: fromX,y1 → x2,y1 → x2,y3 → toX,y3
 function path(svg, fromX, y1, x2, _y1, _x2, y3, toX, _y3, stroke, w) {
