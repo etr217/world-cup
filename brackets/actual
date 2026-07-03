@@ -377,7 +377,7 @@
             "iso": "eg"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -451,9 +451,10 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Egypt",
+            "abbr": "Egypt",
+            "flag": "🇪🇬",
+            "iso": "eg"
           },
           {
             "name": "TBD",
