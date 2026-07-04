@@ -154,7 +154,7 @@
             "iso": "ma"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -212,9 +212,10 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Morocco",
+            "abbr": "Morocco",
+            "flag": "🇲🇦",
+            "iso": "ma"
           },
           {
             "name": "TBD",
