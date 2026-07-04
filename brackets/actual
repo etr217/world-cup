@@ -171,7 +171,7 @@
             "iso": "fr"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -218,9 +218,10 @@
             "iso": "ma"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "France",
+            "abbr": "France",
+            "flag": "🇫🇷",
+            "iso": "fr"
           }
         ],
         "winner": null
