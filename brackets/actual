@@ -360,7 +360,7 @@
             "iso": "gh"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -394,7 +394,7 @@
             "iso": "cv"
           }
         ],
-        "winner": null
+        "winner": 0
       }
     ],
     [
@@ -441,9 +441,10 @@
             "iso": "ch"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Colombia",
+            "abbr": "Colombia",
+            "flag": "🇨🇴",
+            "iso": "co"
           }
         ],
         "winner": null
@@ -457,9 +458,10 @@
             "iso": "eg"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Argentina",
+            "abbr": "Argentina",
+            "flag": "🇦🇷",
+            "iso": "ar"
           }
         ],
         "winner": null
