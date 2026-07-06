@@ -28,7 +28,7 @@
   .btn-accent:hover { background: #3a85e0; color: #fff; }
 
   /* Leaderboard (center bottom) */
-  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: auto; padding-top: 18px; }
+  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: 8px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
   .leaderboard { display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 0.55fr) minmax(120px, 3fr) 72px; gap: 8px; align-items: center; }
@@ -121,7 +121,7 @@
   .half.right { flex-direction: row-reverse; }
 
   .round-col { display: flex; flex-direction: column; width: max-content; min-width: 80px; flex-shrink: 0; height: 100%; align-self: stretch; }
-  .round-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .round-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; flex-shrink: 0; }
   .round-slots { display: flex; flex-direction: column; flex: 1; min-height: 0; }
   .team-slot { display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: 0; }
 
@@ -1066,6 +1066,32 @@ function renderHalf(container, side, display, dots, hypothetical) {
 
 // ── LINES ────────────────────────────────────────────────────────────────────
 const HYPO_LINE_COLOR = '#15803d';
+const LINE_SPREAD = 2.5;
+
+function lineStagger(y1, y3, bandTop, bandBot, pickerOff, pickerCount) {
+  if (pickerCount > 1) {
+    return { lineOff: pickerOff, span: (pickerCount - 1) * LINE_SPREAD };
+  }
+  const bandSpan = bandBot - bandTop;
+  return {
+    lineOff: y1 - (bandTop + bandBot) / 2,
+    span: bandSpan > 1 ? bandSpan : Math.abs(y3 - y1),
+  };
+}
+
+function staggerVertX(fromX, toX, y1, y3, lineOff, span) {
+  if (Math.abs(y3 - y1) < 1) return (fromX + toX) / 2;
+  const minX = Math.min(fromX, toX);
+  const maxX = Math.max(fromX, toX);
+  const ltr = fromX < toX;
+  const goingDown = y3 > y1;
+  const s = Math.max(span, 0);
+  if (s < 0.5) return (fromX + toX) / 2;
+
+  const pos = goingDown ? s / 2 - lineOff : s / 2 + lineOff;
+  const clamped = Math.max(0, Math.min(s, pos));
+  return ltr ? minX + clamped : maxX - clamped;
+}
 
 function drawLines() {
   if (viewingBracketIdx === null) drawAllLines();
@@ -1080,7 +1106,7 @@ function drawHypotheticalLines(display) {
     const isRight = side === 'right';
     const gapRect = gap.getBoundingClientRect();
     const { svg } = makeSVG(gap, gapRect);
-    const x0 = 0, x1 = gapRect.width, xMid = gapRect.width / 2;
+    const x0 = 0, x1 = gapRect.width;
     const fromX = isRight ? x1 : x0, toX = isRight ? x0 : x1;
 
     for (let mi = 0; mi < COUNTS_SIDE[ri]; mi++) {
@@ -1088,6 +1114,9 @@ function drawHypotheticalLines(display) {
       if (!dstSlot) continue;
       const dstMcs = dstSlot.querySelectorAll('.mc');
       if (dstMcs.length < 2) continue;
+
+      const dstY0 = midY(dstMcs[0], gapRect), dstY1 = midY(dstMcs[1], gapRect);
+      const bandTop = Math.min(dstY0, dstY1), bandBot = Math.max(dstY0, dstY1);
 
       [0, 1].forEach(arm => {
         const srcMi = mi * 2 + arm;
@@ -1104,10 +1133,12 @@ function drawHypotheticalLines(display) {
         if (!srcSlot) return;
         const srcMcs = srcSlot.querySelectorAll('.mc');
         if (!srcMcs[rm.winner]) return;
-        const srcY = midY(srcMcs[rm.winner], gapRect);
-        const dstY = midY(dstMcs[destMatch.winner], gapRect);
+        const y1 = midY(srcMcs[rm.winner], gapRect);
+        const y3 = midY(dstMcs[destMatch.winner], gapRect);
+        const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, 0, 1);
+        const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
 
-        path(svg, fromX, srcY, xMid, srcY, xMid, dstY, toX, dstY, HYPO_LINE_COLOR, 2);
+        path(svg, fromX, y1, xVert, y3, toX, HYPO_LINE_COLOR, 2);
       });
     }
   });
@@ -1136,23 +1167,25 @@ function drawHypotheticalLines(display) {
     const dstMc = finalMcs[finalTi];
     const srcY = midY(srcMc, gapRect);
     const dstY = midY(dstMc, gapRect);
-    const { fromX, toX, xMid } = finalGapX(isRight, srcMc, dstMc, gapRect);
+    const { fromX, toX } = finalGapX(isRight, srcMc, dstMc, gapRect);
     const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
+    const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
+    const { lineOff, span } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1);
+    const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff, span);
 
-    path(svg, fromX - xOff, srcY, xMid - xOff, srcY, xMid - xOff, dstY, toX - xOff, dstY, HYPO_LINE_COLOR, 2);
+    path(svg, fromX - xOff, srcY, xVert - xOff, dstY, toX - xOff, HYPO_LINE_COLOR, 2);
   });
 }
 
 function drawAllLines() {
   const el = document.getElementById('bracket');
-  const spread = 2.5;
 
   el.querySelectorAll('.gap-col').forEach(gap => {
     const side = gap.dataset.side, ri = parseInt(gap.dataset.ri), prevRi = ri-1;
     const isRight = side==='right';
     const gapRect = gap.getBoundingClientRect();
     const { svg } = makeSVG(gap, gapRect);
-    const x0=0, x1=gapRect.width, xMid=gapRect.width/2;
+    const x0=0, x1=gapRect.width;
     const fromX = isRight?x1:x0, toX = isRight?x0:x1;
 
     for (let mi=0; mi<COUNTS_SIDE[ri]; mi++) {
@@ -1161,6 +1194,7 @@ function drawAllLines() {
       const dstMcs = dstSlot.querySelectorAll('.mc');
       if (dstMcs.length < 2) continue;
       const dstY0 = midY(dstMcs[0], gapRect), dstY1 = midY(dstMcs[1], gapRect);
+      const bandTop = Math.min(dstY0, dstY1), bandBot = Math.max(dstY0, dstY1);
 
       [0,1].forEach(arm => {
         const srcMi = mi*2+arm, dstY = arm===0?dstY0:dstY1;
@@ -1180,10 +1214,13 @@ function drawAllLines() {
         const pickers = brackets.filter(b => getBracketWinner(b.data, side, prevRi, srcMi) === actualWinnerName);
         if (!pickers.length) return;
 
-        const totalOff = (pickers.length - 1) * spread;
+        const totalOff = (pickers.length - 1) * LINE_SPREAD;
         pickers.forEach((b, i) => {
-          const off = -totalOff/2 + i*spread;
-          path(svg, fromX, srcY+off, xMid, srcY+off, xMid, dstY+off, toX, dstY+off, strokeColor(b.color), 2);
+          const off = -totalOff / 2 + i * LINE_SPREAD;
+          const y1 = srcY + off, y3 = dstY + off;
+          const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length);
+          const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
+          path(svg, fromX, y1, xVert, y3, toX, strokeColor(b.color), 2);
         });
       });
     }
@@ -1209,16 +1246,20 @@ function drawAllLines() {
     const dstMc = finalMcs[finalTi];
     const srcY = midY(srcMc, gapRect);
     const dstY = midY(dstMc, gapRect);
-    const { fromX, toX, xMid } = finalGapX(isRight, srcMc, dstMc, gapRect);
+    const { fromX, toX } = finalGapX(isRight, srcMc, dstMc, gapRect);
     const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
 
     const pickers = brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName);
     if (!pickers.length) return;
 
-    const totalOff = (pickers.length - 1) * spread;
+    const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
+    const totalOff = (pickers.length - 1) * LINE_SPREAD;
     pickers.forEach((b, i) => {
-      const off = -totalOff/2 + i*spread;
-      path(svg, fromX - xOff, srcY + off, xMid - xOff, srcY + off, xMid - xOff, dstY + off, toX - xOff, dstY + off, strokeColor(b.color), 2);
+      const off = -totalOff / 2 + i * LINE_SPREAD;
+      const y1 = srcY + off, y3 = dstY + off;
+      const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length);
+      const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
+      path(svg, fromX - xOff, y1, xVert - xOff, y3, toX - xOff, strokeColor(b.color), 2);
     });
   });
 }
@@ -1249,10 +1290,11 @@ function finalGapX(isRight, srcMc, dstMc, gapRect) {
   const toX = mcEdgeX(dstMc, gapRect, isRight ? 'right' : 'left');
   return { fromX, toX, xMid: (fromX + toX) / 2 };
 }
-// Draw a connected elbow path: fromX,y1 → x2,y1 → x2,y3 → toX,y3
-function path(svg, fromX, y1, x2, _y1, _x2, y3, toX, _y3, stroke, w) {
+
+// Elbow path: horiz → vertical → horiz
+function path(svg, fromX, y1, xVert, y3, toX, stroke, w) {
   const p = document.createElementNS('http://www.w3.org/2000/svg','polyline');
-  p.setAttribute('points', `${fromX},${y1} ${x2},${y1} ${x2},${y3} ${toX},${y3}`);
+  p.setAttribute('points', `${fromX},${y1} ${xVert},${y1} ${xVert},${y3} ${toX},${y3}`);
   p.setAttribute('stroke', stroke);
   p.setAttribute('stroke-width', w);
   p.setAttribute('fill', 'none');
