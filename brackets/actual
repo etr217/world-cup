@@ -415,7 +415,7 @@
             "iso": "no"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -432,7 +432,7 @@
             "iso": "gb-eng"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -473,14 +473,16 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Norway",
+            "abbr": "Norway",
+            "flag": "🇳🇴",
+            "iso": "no"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "England",
+            "abbr": "England",
+            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "iso": "gb-eng"
           }
         ],
         "winner": null
