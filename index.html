@@ -1066,31 +1066,27 @@ function renderHalf(container, side, display, dots, hypothetical) {
 
 // ── LINES ────────────────────────────────────────────────────────────────────
 const HYPO_LINE_COLOR = '#15803d';
+const NO_PICKER_LINE_COLOR = '#7a8494';
 const LINE_SPREAD = 2.5;
 
-function lineStagger(y1, y3, bandTop, bandBot, pickerOff, pickerCount) {
-  if (pickerCount > 1) {
-    return { lineOff: pickerOff, span: (pickerCount - 1) * LINE_SPREAD };
-  }
-  const bandSpan = bandBot - bandTop;
-  return {
-    lineOff: y1 - (bandTop + bandBot) / 2,
-    span: bandSpan > 1 ? bandSpan : Math.abs(y3 - y1),
-  };
+function lineStagger(y1, y3, bandTop, bandBot, pickerOff, pickerCount, fromX, toX) {
+  if (pickerCount > 1) return { lineOff: pickerOff };
+  return { lineOff: 0 };
 }
 
-function staggerVertX(fromX, toX, y1, y3, lineOff, span) {
+function staggerVertX(fromX, toX, y1, y3, lineOff) {
   if (Math.abs(y3 - y1) < 1) return (fromX + toX) / 2;
   const minX = Math.min(fromX, toX);
   const maxX = Math.max(fromX, toX);
   const ltr = fromX < toX;
   const goingDown = y3 > y1;
-  const s = Math.max(span, 0);
-  if (s < 0.5) return (fromX + toX) / 2;
+  const gapW = maxX - minX;
+  if (gapW < 0.5) return (fromX + toX) / 2;
 
-  const pos = goingDown ? s / 2 - lineOff : s / 2 + lineOff;
-  const clamped = Math.max(0, Math.min(s, pos));
-  return ltr ? minX + clamped : maxX - clamped;
+  const center = gapW / 2;
+  let pos = goingDown ? center - lineOff : center + lineOff;
+  pos = Math.max(0, Math.min(gapW, pos));
+  return ltr ? minX + pos : maxX - pos;
 }
 
 function drawLines() {
@@ -1135,8 +1131,8 @@ function drawHypotheticalLines(display) {
         if (!srcMcs[rm.winner]) return;
         const y1 = midY(srcMcs[rm.winner], gapRect);
         const y3 = midY(dstMcs[destMatch.winner], gapRect);
-        const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, 0, 1);
-        const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
+        const { lineOff } = lineStagger(y1, y3, bandTop, bandBot, 0, 1, fromX, toX);
+        const xVert = staggerVertX(fromX, toX, y1, y3, lineOff);
 
         path(svg, fromX, y1, xVert, y3, toX, HYPO_LINE_COLOR, 2);
       });
@@ -1170,8 +1166,8 @@ function drawHypotheticalLines(display) {
     const { fromX, toX } = finalGapX(isRight, srcMc, dstMc, gapRect);
     const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
     const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
-    const { lineOff, span } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1);
-    const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff, span);
+    const { lineOff } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1, fromX, toX);
+    const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff);
 
     path(svg, fromX - xOff, srcY, xVert - xOff, dstY, toX - xOff, HYPO_LINE_COLOR, 2);
   });
@@ -1212,14 +1208,19 @@ function drawAllLines() {
 
         // Find every bracket that also picked the actual winner for this match
         const pickers = brackets.filter(b => getBracketWinner(b.data, side, prevRi, srcMi) === actualWinnerName);
-        if (!pickers.length) return;
+        if (!pickers.length) {
+          const { lineOff } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1, fromX, toX);
+          const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff);
+          path(svg, fromX, srcY, xVert, dstY, toX, NO_PICKER_LINE_COLOR, 2, true);
+          return;
+        }
 
         const totalOff = (pickers.length - 1) * LINE_SPREAD;
         pickers.forEach((b, i) => {
           const off = -totalOff / 2 + i * LINE_SPREAD;
           const y1 = srcY + off, y3 = dstY + off;
-          const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length);
-          const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
+          const { lineOff } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length, fromX, toX);
+          const xVert = staggerVertX(fromX, toX, y1, y3, lineOff);
           path(svg, fromX, y1, xVert, y3, toX, strokeColor(b.color), 2);
         });
       });
@@ -1250,15 +1251,21 @@ function drawAllLines() {
     const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
 
     const pickers = brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName);
-    if (!pickers.length) return;
+    if (!pickers.length) {
+      const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
+      const { lineOff } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1, fromX, toX);
+      const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff);
+      path(svg, fromX - xOff, srcY, xVert - xOff, dstY, toX - xOff, NO_PICKER_LINE_COLOR, 2, true);
+      return;
+    }
 
     const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
     const totalOff = (pickers.length - 1) * LINE_SPREAD;
     pickers.forEach((b, i) => {
       const off = -totalOff / 2 + i * LINE_SPREAD;
       const y1 = srcY + off, y3 = dstY + off;
-      const { lineOff, span } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length);
-      const xVert = staggerVertX(fromX, toX, y1, y3, lineOff, span);
+      const { lineOff } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length, fromX, toX);
+      const xVert = staggerVertX(fromX, toX, y1, y3, lineOff);
       path(svg, fromX - xOff, y1, xVert - xOff, y3, toX - xOff, strokeColor(b.color), 2);
     });
   });
@@ -1292,7 +1299,7 @@ function finalGapX(isRight, srcMc, dstMc, gapRect) {
 }
 
 // Elbow path: horiz → vertical → horiz
-function path(svg, fromX, y1, xVert, y3, toX, stroke, w) {
+function path(svg, fromX, y1, xVert, y3, toX, stroke, w, dashed) {
   const p = document.createElementNS('http://www.w3.org/2000/svg','polyline');
   p.setAttribute('points', `${fromX},${y1} ${xVert},${y1} ${xVert},${y3} ${toX},${y3}`);
   p.setAttribute('stroke', stroke);
@@ -1300,6 +1307,7 @@ function path(svg, fromX, y1, xVert, y3, toX, stroke, w) {
   p.setAttribute('fill', 'none');
   p.setAttribute('stroke-linecap', 'round');
   p.setAttribute('stroke-linejoin', 'round');
+  if (dashed) p.setAttribute('stroke-dasharray', '5 4');
   svg.appendChild(p);
 }
 function line(svg,x1,y1,x2,y2,stroke,w) {
