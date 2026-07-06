@@ -21,18 +21,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: auto; }
 
-  header {
-    background: linear-gradient(135deg, #1a2030 0%, #12151c 55%, #1a2030 100%);
-    border-bottom: 3px solid var(--accent);
-    padding: 14px 22px 11px;
-    display: flex; align-items: center; gap: 13px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-  }
-  header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(16px,2.5vw,28px); letter-spacing: 3px; color: var(--accent); line-height: 1; }
-  header p  { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
-  .header-actions { margin-left: auto; display: flex; gap: 7px; align-items: center; }
-
   .btn { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; transition: all .15s; }
   .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
@@ -117,7 +105,7 @@
     overflow-x: auto;
     position: relative;
     z-index: 1;
-    min-height: calc(100vh - 67px);
+    min-height: 100vh;
   }
 
   .bracket-outer {
@@ -127,7 +115,7 @@
     align-items: stretch;
     width: 100%;
     min-width: 100%;
-    min-height: calc(100vh - 110px);
+    min-height: calc(100vh - 40px);
   }
   .half { display: flex; align-items: stretch; height: 100%; }
   .half.right { flex-direction: row-reverse; }
@@ -148,7 +136,14 @@
   }
   .mc:first-child { border-radius: 4px 4px 0 0; border-bottom: none; }
   .mc:last-child  { border-radius: 0 0 4px 4px; }
-  .mc.picked { border-color: #9ca3af; }
+  .mc.actual-win { background: #14532d; border-color: #22c55e; }
+  .mc.actual-loss { background: #450a0a; border-color: #ef4444; }
+  .mc.actual-pickable { cursor: pointer; }
+  .mc.actual-pickable:hover { border-color: var(--accent); background: #252b3a; }
+  .mc.actual-clearable { cursor: pointer; }
+  .mc.actual-clearable:hover { border-color: var(--accent); }
+  .mc.actual-decided { cursor: default; }
+  .mc.actual-locked { cursor: default; }
   .mc.hypo-win     { background: #14532d; border-color: #22c55e; }
   .mc.hypo-correct { background: #22c55e; border-color: #4ade80; color: #fff; }
   .mc.hypo-correct .tname { color: #fff; }
@@ -181,7 +176,10 @@
   .gap-col svg, .final-gap svg { position: absolute; top: 0; left: 0; overflow: visible; }
 
   /* Center */
-  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 500px; flex-shrink: 0; padding: 12px 8px 0; height: 100%; align-self: stretch; }
+  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 500px; flex-shrink: 0; padding: 0 8px 0; height: 100%; align-self: stretch; }
+  .bracket-title { display: flex; flex-direction: column; align-items: center; text-align: center; width: calc(100% + 100px); margin: 4px -58px 10px; line-height: 0; }
+  .bracket-title img { width: 100%; max-width: 600px; height: 230px; object-fit: contain; display: block; }
+  .bracket-title span { font-family: 'Bebas Neue', sans-serif; display: block; font-size: 11px; letter-spacing: 2px; color: var(--accent); margin-top: 6px; }
   .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 10px; align-self: stretch; }
   .champ-card { background: linear-gradient(145deg,#1a2e1f,#152418); border: 2px solid #22c55e; border-radius: 10px; padding: 16px 10px; text-align: center; box-shadow: 0 0 20px rgba(34,197,94,0.2); width: 100%; }
   .champ-trophy { font-size: 28px; }
@@ -205,19 +203,6 @@
 </style>
 </head>
 <body>
-
-<header>
-  <span style="font-size:26px">🏆</span>
-  <div>
-    <h1>World Cup 2026 — Bracket Scorer</h1>
-    <p>Actual results from <code>brackets/actual</code> · score everyone's picks</p>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="clearBrackets()">Clear brackets</button>
-    <button class="btn btn-ghost" onclick="downloadSnapshot()">Download snapshot</button>
-    <button class="btn btn-accent" onclick="openImportModal()">+ Add bracket</button>
-  </div>
-</header>
 
 <div class="bracket-scroll">
   <div class="bracket-outer" id="bracket"></div>
@@ -297,7 +282,7 @@ const R32_SCHEDULE = {
 
 // R16: left pairs (mi=0..3), right pairs (mi=0..3) — all PT
 const R16_SCHEDULE = {
-  left:  ["Jul 4, 10am","Jul 4, 2pm","Jul 6, 2pm","Jul 6, 12pm"],
+  left:  ["Jul 4, 10am","Jul 4, 2pm","Jul 6, 5pm","Jul 6, 12pm"],
   right: ["Jul 5, 1pm","Jul 5, 5pm","Jul 7, 1pm","Jul 7, 9am"],
 };
 
@@ -359,9 +344,41 @@ let results  = buildResults();
 let brackets = [];
 let nextColorIdx = 0;
 let viewingBracketIdx = null;
+const userActualPicks = new Set();
+const fileActualDecided = new Set();
+const fileActualWinners = new Map();
+
+function actualPickKey(side, ri, mi) {
+  if (side === 'final') return 'final';
+  if (side === 'third') return 'third';
+  return `${side}:${ri}:${mi}`;
+}
+
+function pruneUserActualPicks() {
+  for (const key of [...userActualPicks]) {
+    let match;
+    if (key === 'final') match = results.final;
+    else if (key === 'third') match = results.third;
+    else {
+      const [side, ri, mi] = key.split(':');
+      match = results[side][+ri][+mi];
+    }
+    if (!match || match.winner === null) userActualPicks.delete(key);
+  }
+}
 
 function bracketDisplayData() {
-  return viewingBracketIdx !== null ? brackets[viewingBracketIdx].data : results;
+  if (viewingBracketIdx === null) return results;
+  const d = brackets[viewingBracketIdx].data;
+  return {
+    ...d,
+    third: d.third || { teams: [tbd(), tbd()], winner: null },
+    champion: d.champion ?? (
+      d.final && d.final.winner !== null && d.final.winner !== undefined
+        ? d.final.teams[d.final.winner]
+        : null
+    ),
+  };
 }
 
 function showActualBracket() {
@@ -375,11 +392,22 @@ function showBracket(idx) {
   render();
 }
 
-function mcClasses(displayMatch, ti, actualMatch, hypothetical) {
+function mcClasses(displayMatch, ti, actualMatch, hypothetical, pickKey, side, ri) {
   const team = displayMatch.teams[ti];
   if (team.name === 'TBD') return 'mc tbd';
   if (!hypothetical) {
-    return 'mc' + (displayMatch.winner === ti ? ' picked' : '');
+    if (viewingBracketIdx === null && displayMatch.winner !== null) {
+      if (pickKey && userActualPicks.has(pickKey)) {
+        return 'mc actual-decided' + (displayMatch.winner === ti ? ' actual-win' : ' actual-loss');
+      }
+      return 'mc actual-decided' + (pickKey && fileActualDecided.has(pickKey) ? ' actual-locked' : '');
+    }
+    let cls = 'mc';
+    if (viewingBracketIdx === null && pickKey) {
+      if (isActualTeamPickable(displayMatch, ti, pickKey)) cls += ' actual-pickable';
+    }
+    if (viewingBracketIdx === null && pickKey && fileActualDecided.has(pickKey)) cls += ' actual-locked';
+    return cls;
   }
   if (displayMatch.winner === null) return 'mc';
   if (displayMatch.winner === ti) {
@@ -391,6 +419,50 @@ function mcClasses(displayMatch, ti, actualMatch, hypothetical) {
     return 'mc hypo-win';
   }
   return 'mc hypo-loss';
+}
+
+function recordFileDecided(data) {
+  fileActualDecided.clear();
+  fileActualWinners.clear();
+  ['left', 'right'].forEach(side => {
+    COUNTS_SIDE.forEach((count, ri) => {
+      for (let mi = 0; mi < count; mi++) {
+        const m = data[side]?.[ri]?.[mi];
+        if (m && m.winner !== null && m.winner !== undefined) {
+          const key = actualPickKey(side, ri, mi);
+          fileActualDecided.add(key);
+          fileActualWinners.set(key, m.winner);
+        }
+      }
+    });
+  });
+  if (data.final?.winner !== null && data.final?.winner !== undefined) {
+    fileActualDecided.add('final');
+    fileActualWinners.set('final', data.final.winner);
+  }
+  if (data.third?.winner !== null && data.third?.winner !== undefined) {
+    fileActualDecided.add('third');
+    fileActualWinners.set('third', data.third.winner);
+  }
+}
+
+function restoreFileDecidedWinners() {
+  for (const [key, winner] of fileActualWinners) {
+    if (key === 'final') {
+      const m = results.final;
+      if (m.teams[0].name !== 'TBD' && m.teams[1].name !== 'TBD') {
+        m.winner = winner;
+        results.champion = copyTeam(m.teams[winner]);
+      }
+    } else if (key === 'third') {
+      const m = results.third;
+      if (m.teams[0].name !== 'TBD' && m.teams[1].name !== 'TBD') m.winner = winner;
+    } else {
+      const [side, ri, mi] = key.split(':');
+      const m = results[side][+ri][+mi];
+      if (m && m.teams[0].name !== 'TBD' && m.teams[1].name !== 'TBD') m.winner = winner;
+    }
+  }
 }
 
 function applyActualData(data) {
@@ -406,6 +478,205 @@ function applyActualData(data) {
         : null
     ),
   };
+  userActualPicks.clear();
+  recordFileDecided(data);
+  syncResultsBracket();
+}
+
+// ── ACTUAL BRACKET SYNC & PICKING ────────────────────────────────────────────
+
+function copyTeam(team) {
+  if (!team || team.name === 'TBD') return tbd();
+  return { name: team.name, flag: team.flag || flag(team.name), abbr: team.abbr || abbr(team.name), ...(team.iso ? { iso: team.iso } : {}) };
+}
+
+function winnerTeam(match) {
+  if (!match || match.winner === null || match.winner === undefined) return null;
+  return match.teams[match.winner];
+}
+
+function loserTeam(match) {
+  if (!match || match.winner === null || match.winner === undefined) return null;
+  return match.teams[match.winner === 0 ? 1 : 0];
+}
+
+function syncResultsBracket() {
+  ['left', 'right'].forEach(side => {
+    for (let ri = 1; ri < COUNTS_SIDE.length; ri++) {
+      for (let mi = 0; mi < COUNTS_SIDE[ri]; mi++) {
+        const match = results[side][ri][mi];
+        const t0 = winnerTeam(results[side][ri - 1][mi * 2]);
+        const t1 = winnerTeam(results[side][ri - 1][mi * 2 + 1]);
+        match.teams[0] = copyTeam(t0);
+        match.teams[1] = copyTeam(t1);
+        const key = actualPickKey(side, ri, mi);
+        const oneTbd = !t0 || !t1 || t0.name === 'TBD' || t1.name === 'TBD';
+        if (oneTbd) {
+          if (userActualPicks.has(key)) {
+            if (match.winner !== null) {
+              const w = match.teams[match.winner];
+              if (!w || w.name === 'TBD') match.winner = null;
+            }
+          } else {
+            match.winner = null;
+          }
+        }
+      }
+    }
+  });
+
+  const leftSF = results.left[COUNTS_SIDE.length - 1][0];
+  const rightSF = results.right[COUNTS_SIDE.length - 1][0];
+  const leftW = winnerTeam(leftSF);
+  const rightW = winnerTeam(rightSF);
+  results.final.teams[0] = copyTeam(leftW);
+  results.final.teams[1] = copyTeam(rightW);
+  const finalOneTbd = !leftW || !rightW || leftW.name === 'TBD' || rightW.name === 'TBD';
+  if (finalOneTbd) {
+    if (userActualPicks.has('final')) {
+      if (results.final.winner !== null) {
+        const w = results.final.teams[results.final.winner];
+        if (!w || w.name === 'TBD') {
+          results.final.winner = null;
+          results.champion = null;
+        } else {
+          results.champion = copyTeam(w);
+        }
+      }
+    } else {
+      results.final.winner = null;
+      results.champion = null;
+    }
+  } else if (results.final.winner !== null) {
+    results.champion = copyTeam(results.final.teams[results.final.winner]);
+  } else {
+    results.champion = null;
+  }
+
+  const leftL = loserTeam(leftSF);
+  const rightL = loserTeam(rightSF);
+  results.third.teams[0] = copyTeam(leftL);
+  results.third.teams[1] = copyTeam(rightL);
+  const thirdOneTbd = !leftL || !rightL || leftL.name === 'TBD' || rightL.name === 'TBD';
+  if (thirdOneTbd) {
+    if (userActualPicks.has('third')) {
+      if (results.third.winner !== null) {
+        const w = results.third.teams[results.third.winner];
+        if (!w || w.name === 'TBD') results.third.winner = null;
+      }
+    } else {
+      results.third.winner = null;
+    }
+  }
+  restoreFileDecidedWinners();
+  pruneUserActualPicks();
+}
+
+function isActualMatchPickable(match, pickKey) {
+  if (pickKey && fileActualDecided.has(pickKey)) return false;
+  return match.winner === null && (
+    match.teams[0].name !== 'TBD' || match.teams[1].name !== 'TBD'
+  );
+}
+
+function isActualTeamPickable(match, ti, pickKey) {
+  if (pickKey && fileActualDecided.has(pickKey)) return false;
+  return match.winner === null && match.teams[ti].name !== 'TBD';
+}
+
+function isActualFinalPickable() {
+  if (fileActualDecided.has('final')) return false;
+  return isActualMatchPickable(results.final, 'final');
+}
+
+function isActualThirdPickable() {
+  if (fileActualDecided.has('third')) return false;
+  return isActualMatchPickable(results.third, 'third');
+}
+
+function isActualMatchClearable(match, pickKey) {
+  return pickKey
+    && userActualPicks.has(pickKey)
+    && !fileActualDecided.has(pickKey)
+    && match.winner !== null
+    && (match.teams[0].name !== 'TBD' || match.teams[1].name !== 'TBD');
+}
+
+function attachActualPick(mc, match, ti, pickKey, pickFn, clearFn) {
+  if (viewingBracketIdx !== null || fileActualDecided.has(pickKey)) return;
+  if (isActualTeamPickable(match, ti, pickKey)) {
+    mc.classList.add('actual-pickable');
+    mc.onclick = (e) => { e.stopPropagation(); pickFn(ti); };
+  } else if (match.winner === ti && isActualMatchClearable(match, pickKey)) {
+    mc.classList.add('actual-clearable');
+    mc.onclick = (e) => { e.stopPropagation(); clearFn(); };
+  }
+}
+
+function clearActualSide(side, ri, mi) {
+  const key = actualPickKey(side, ri, mi);
+  const match = results[side][ri][mi];
+  if (!isActualMatchClearable(match, key)) return;
+  match.winner = null;
+  userActualPicks.delete(key);
+  syncResultsBracket();
+  render();
+  showToast('Result cleared');
+}
+
+function pickActualSide(side, ri, mi, ti) {
+  const key = actualPickKey(side, ri, mi);
+  const match = results[side][ri][mi];
+  if (fileActualDecided.has(key) || !isActualTeamPickable(match, ti, key)) return;
+  match.winner = ti;
+  userActualPicks.add(key);
+  syncResultsBracket();
+  render();
+  showToast(`${match.teams[ti].name} wins`);
+}
+
+function clearActualFinal() {
+  if (!isActualMatchClearable(results.final, 'final')) return;
+  results.final.winner = null;
+  results.champion = null;
+  userActualPicks.delete('final');
+  pruneUserActualPicks();
+  render();
+  showToast('Final result cleared');
+}
+
+function pickActualFinal(ti) {
+  if (fileActualDecided.has('final') || !isActualTeamPickable(results.final, ti, 'final')) return;
+  results.final.winner = ti;
+  results.champion = copyTeam(results.final.teams[ti]);
+  userActualPicks.add('final');
+  render();
+  showToast(`${results.final.teams[ti].name} wins the Final`);
+}
+
+function clearActualThird() {
+  if (!isActualMatchClearable(results.third, 'third')) return;
+  results.third.winner = null;
+  userActualPicks.delete('third');
+  render();
+  showToast('3rd place result cleared');
+}
+
+function pickActualThird(ti) {
+  if (fileActualDecided.has('third') || !isActualTeamPickable(results.third, ti, 'third')) return;
+  results.third.winner = ti;
+  userActualPicks.add('third');
+  render();
+  showToast(`${results.third.teams[ti].name} takes 3rd`);
+}
+
+function downloadActual() {
+  const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'actual';
+  a.click();
+  showToast('Downloaded actual');
 }
 
 // ── BRACKET QUERY HELPERS ────────────────────────────────────────────────────
@@ -594,6 +865,12 @@ function renderBracket() {
   // Center: Final + Champion
   const center = document.createElement('div');
   center.className = 'center-col';
+
+  const title = document.createElement('div');
+  title.className = 'bracket-title';
+  title.innerHTML = '<img src="assets/wc26-bracket-logo.svg" alt="FIFA World Cup 2026 Bracket Challenge">';
+  center.appendChild(title);
+
   const cl = document.createElement('div');
   cl.className = 'center-label'; cl.textContent = 'Final';
   center.appendChild(cl);
@@ -612,7 +889,7 @@ function renderBracket() {
     const pickers  = dots ? bracketsPickedFinalWinner(team.name) : [];
 
     const row = document.createElement('div');
-    row.className = mcClasses(display.final, ti, results.final, hypothetical);
+    row.className = mcClasses(display.final, ti, results.final, hypothetical, 'final');
     row.style.borderRadius = ti===0 ? '4px 4px 0 0' : '0 0 4px 4px';
     if (ti===0) row.style.borderBottom = 'none';
 
@@ -628,6 +905,7 @@ function renderBracket() {
       row.appendChild(dotRow);
     }
 
+    attachActualPick(row, display.final, ti, 'final', pickActualFinal, clearActualFinal);
     fc.appendChild(row);
   });
   center.appendChild(fc);
@@ -663,7 +941,7 @@ function renderBracket() {
     }) : [];
 
     const row = document.createElement('div');
-    row.className = mcClasses(tm, ti, results.third, hypothetical);
+    row.className = mcClasses(tm, ti, results.third, hypothetical, 'third');
     row.style.borderRadius = ti===0 ? '4px 4px 0 0' : '0 0 4px 4px';
     if (ti===0) row.style.borderBottom = 'none';
 
@@ -679,6 +957,7 @@ function renderBracket() {
       row.appendChild(dotRow);
     }
 
+    attachActualPick(row, tm, ti, 'third', pickActualThird, clearActualThird);
     tc.appendChild(row);
   });
   center.appendChild(tc);
@@ -754,7 +1033,7 @@ function renderHalf(container, side, display, dots, hypothetical) {
         const pickers  = dots && team.name !== 'TBD' ? bracketsPickedWinner(side, ri, mi, team.name) : [];
 
         const mc = document.createElement('div');
-        mc.className = mcClasses(match, ti, actualMatch, hypothetical);
+        mc.className = mcClasses(match, ti, actualMatch, hypothetical, actualPickKey(side, ri, mi), side, ri);
 
         const content = document.createElement('div');
         content.className = 'mc-content';
@@ -773,6 +1052,7 @@ function renderHalf(container, side, display, dots, hypothetical) {
           mc.appendChild(dotRow);
         }
 
+        attachActualPick(mc, match, ti, actualPickKey(side, ri, mi), (t) => pickActualSide(side, ri, mi, t), () => clearActualSide(side, ri, mi));
         pair.appendChild(mc);
       });
 
