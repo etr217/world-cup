@@ -451,7 +451,7 @@
             "iso": "co"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -492,9 +492,10 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Switzerland",
+            "abbr": "Switzerland",
+            "flag": "🇨🇭",
+            "iso": "ch"
           },
           {
             "name": "Argentina",
