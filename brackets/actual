@@ -468,7 +468,7 @@
             "iso": "ar"
           }
         ],
-        "winner": null
+        "winner": 1
       }
     ],
     [
@@ -497,9 +497,10 @@
             "flag": ""
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Argentina",
+            "abbr": "Argentina",
+            "flag": "🇦🇷",
+            "iso": "ar"
           }
         ],
         "winner": null
