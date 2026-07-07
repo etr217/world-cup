@@ -188,7 +188,7 @@
             "iso": "us"
           }
         ],
-        "winner": null
+        "winner": 0
       },
       {
         "teams": [
@@ -205,7 +205,7 @@
             "iso": "pt"
           }
         ],
-        "winner": null
+        "winner": 0
       }
     ],
     [
@@ -229,14 +229,16 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Belgium",
+            "abbr": "Belgium",
+            "flag": "🇧🇪",
+            "iso": "be"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Spain",
+            "abbr": "Spain",
+            "flag": "🇪🇸",
+            "iso": "es"
           }
         ],
         "winner": null
