@@ -6,13 +6,13 @@
           {
             "name": "South Africa",
             "abbr": "South Africa",
-            "flag": "🇿🇦",
+            "flag": "\ud83c\uddff\ud83c\udde6",
             "iso": "za"
           },
           {
             "name": "Canada",
             "abbr": "Canada",
-            "flag": "🇨🇦",
+            "flag": "\ud83c\udde8\ud83c\udde6",
             "iso": "ca"
           }
         ],
@@ -23,13 +23,13 @@
           {
             "name": "Netherlands",
             "abbr": "Netherlands",
-            "flag": "🇳🇱",
+            "flag": "\ud83c\uddf3\ud83c\uddf1",
             "iso": "nl"
           },
           {
             "name": "Morocco",
             "abbr": "Morocco",
-            "flag": "🇲🇦",
+            "flag": "\ud83c\uddf2\ud83c\udde6",
             "iso": "ma"
           }
         ],
@@ -40,13 +40,13 @@
           {
             "name": "Germany",
             "abbr": "Germany",
-            "flag": "🇩🇪",
+            "flag": "\ud83c\udde9\ud83c\uddea",
             "iso": "de"
           },
           {
             "name": "Paraguay",
             "abbr": "Paraguay",
-            "flag": "🇵🇾",
+            "flag": "\ud83c\uddf5\ud83c\uddfe",
             "iso": "py"
           }
         ],
@@ -57,13 +57,13 @@
           {
             "name": "France",
             "abbr": "France",
-            "flag": "🇫🇷",
+            "flag": "\ud83c\uddeb\ud83c\uddf7",
             "iso": "fr"
           },
           {
             "name": "Sweden",
             "abbr": "Sweden",
-            "flag": "🇸🇪",
+            "flag": "\ud83c\uddf8\ud83c\uddea",
             "iso": "se"
           }
         ],
@@ -74,13 +74,13 @@
           {
             "name": "Belgium",
             "abbr": "Belgium",
-            "flag": "🇧🇪",
+            "flag": "\ud83c\udde7\ud83c\uddea",
             "iso": "be"
           },
           {
             "name": "Senegal",
             "abbr": "Senegal",
-            "flag": "🇸🇳",
+            "flag": "\ud83c\uddf8\ud83c\uddf3",
             "iso": "sn"
           }
         ],
@@ -91,13 +91,13 @@
           {
             "name": "USA",
             "abbr": "USA",
-            "flag": "🇺🇸",
+            "flag": "\ud83c\uddfa\ud83c\uddf8",
             "iso": "us"
           },
           {
             "name": "Bosnia & Hz",
             "abbr": "Bosnia & Hz",
-            "flag": "🇧🇦",
+            "flag": "\ud83c\udde7\ud83c\udde6",
             "iso": "ba"
           }
         ],
@@ -108,13 +108,13 @@
           {
             "name": "Spain",
             "abbr": "Spain",
-            "flag": "🇪🇸",
+            "flag": "\ud83c\uddea\ud83c\uddf8",
             "iso": "es"
           },
           {
             "name": "Austria",
             "abbr": "Austria",
-            "flag": "🇦🇹",
+            "flag": "\ud83c\udde6\ud83c\uddf9",
             "iso": "at"
           }
         ],
@@ -125,13 +125,13 @@
           {
             "name": "Portugal",
             "abbr": "Portugal",
-            "flag": "🇵🇹",
+            "flag": "\ud83c\uddf5\ud83c\uddf9",
             "iso": "pt"
           },
           {
             "name": "Croatia",
             "abbr": "Croatia",
-            "flag": "🇭🇷",
+            "flag": "\ud83c\udded\ud83c\uddf7",
             "iso": "hr"
           }
         ],
@@ -144,13 +144,13 @@
           {
             "name": "Canada",
             "abbr": "Canada",
-            "flag": "🇨🇦",
+            "flag": "\ud83c\udde8\ud83c\udde6",
             "iso": "ca"
           },
           {
             "name": "Morocco",
             "abbr": "Morocco",
-            "flag": "🇲🇦",
+            "flag": "\ud83c\uddf2\ud83c\udde6",
             "iso": "ma"
           }
         ],
@@ -161,13 +161,13 @@
           {
             "name": "Paraguay",
             "abbr": "Paraguay",
-            "flag": "🇵🇾",
+            "flag": "\ud83c\uddf5\ud83c\uddfe",
             "iso": "py"
           },
           {
             "name": "France",
             "abbr": "France",
-            "flag": "🇫🇷",
+            "flag": "\ud83c\uddeb\ud83c\uddf7",
             "iso": "fr"
           }
         ],
@@ -178,13 +178,13 @@
           {
             "name": "Belgium",
             "abbr": "Belgium",
-            "flag": "🇧🇪",
+            "flag": "\ud83c\udde7\ud83c\uddea",
             "iso": "be"
           },
           {
             "name": "USA",
             "abbr": "USA",
-            "flag": "🇺🇸",
+            "flag": "\ud83c\uddfa\ud83c\uddf8",
             "iso": "us"
           }
         ],
@@ -195,13 +195,13 @@
           {
             "name": "Spain",
             "abbr": "Spain",
-            "flag": "🇪🇸",
+            "flag": "\ud83c\uddea\ud83c\uddf8",
             "iso": "es"
           },
           {
             "name": "Portugal",
             "abbr": "Portugal",
-            "flag": "🇵🇹",
+            "flag": "\ud83c\uddf5\ud83c\uddf9",
             "iso": "pt"
           }
         ],
@@ -214,30 +214,30 @@
           {
             "name": "Morocco",
             "abbr": "Morocco",
-            "flag": "🇲🇦",
+            "flag": "\ud83c\uddf2\ud83c\udde6",
             "iso": "ma"
           },
           {
             "name": "France",
             "abbr": "France",
-            "flag": "🇫🇷",
+            "flag": "\ud83c\uddeb\ud83c\uddf7",
             "iso": "fr"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
           {
             "name": "Belgium",
             "abbr": "Belgium",
-            "flag": "🇧🇪",
+            "flag": "\ud83c\udde7\ud83c\uddea",
             "iso": "be"
           },
           {
             "name": "Spain",
             "abbr": "Spain",
-            "flag": "🇪🇸",
+            "flag": "\ud83c\uddea\ud83c\uddf8",
             "iso": "es"
           }
         ],
@@ -248,9 +248,10 @@
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "France",
+            "abbr": "France",
+            "flag": "\ud83c\uddeb\ud83c\uddf7",
+            "iso": "fr"
           },
           {
             "name": "TBD",
@@ -269,13 +270,13 @@
           {
             "name": "Brazil",
             "abbr": "Brazil",
-            "flag": "🇧🇷",
+            "flag": "\ud83c\udde7\ud83c\uddf7",
             "iso": "br"
           },
           {
             "name": "Japan",
             "abbr": "Japan",
-            "flag": "🇯🇵",
+            "flag": "\ud83c\uddef\ud83c\uddf5",
             "iso": "jp"
           }
         ],
@@ -284,15 +285,15 @@
       {
         "teams": [
           {
-            "name": "Côte d'Ivoire",
-            "abbr": "Côte d'Ivoire",
-            "flag": "🇨🇮",
+            "name": "C\u00f4te d'Ivoire",
+            "abbr": "C\u00f4te d'Ivoire",
+            "flag": "\ud83c\udde8\ud83c\uddee",
             "iso": "ci"
           },
           {
             "name": "Norway",
             "abbr": "Norway",
-            "flag": "🇳🇴",
+            "flag": "\ud83c\uddf3\ud83c\uddf4",
             "iso": "no"
           }
         ],
@@ -303,13 +304,13 @@
           {
             "name": "Mexico",
             "abbr": "Mexico",
-            "flag": "🇲🇽",
+            "flag": "\ud83c\uddf2\ud83c\uddfd",
             "iso": "mx"
           },
           {
             "name": "Ecuador",
             "abbr": "Ecuador",
-            "flag": "🇪🇨",
+            "flag": "\ud83c\uddea\ud83c\udde8",
             "iso": "ec"
           }
         ],
@@ -320,13 +321,13 @@
           {
             "name": "England",
             "abbr": "England",
-            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f",
             "iso": "gb-eng"
           },
           {
             "name": "DR Congo",
             "abbr": "DR Congo",
-            "flag": "🇨🇩",
+            "flag": "\ud83c\udde8\ud83c\udde9",
             "iso": "cd"
           }
         ],
@@ -337,13 +338,13 @@
           {
             "name": "Switzerland",
             "abbr": "Switzerland",
-            "flag": "🇨🇭",
+            "flag": "\ud83c\udde8\ud83c\udded",
             "iso": "ch"
           },
           {
             "name": "Algeria",
             "abbr": "Algeria",
-            "flag": "🇩🇿",
+            "flag": "\ud83c\udde9\ud83c\uddff",
             "iso": "dz"
           }
         ],
@@ -354,13 +355,13 @@
           {
             "name": "Colombia",
             "abbr": "Colombia",
-            "flag": "🇨🇴",
+            "flag": "\ud83c\udde8\ud83c\uddf4",
             "iso": "co"
           },
           {
             "name": "Ghana",
             "abbr": "Ghana",
-            "flag": "🇬🇭",
+            "flag": "\ud83c\uddec\ud83c\udded",
             "iso": "gh"
           }
         ],
@@ -371,13 +372,13 @@
           {
             "name": "Australia",
             "abbr": "Australia",
-            "flag": "🇦🇺",
+            "flag": "\ud83c\udde6\ud83c\uddfa",
             "iso": "au"
           },
           {
             "name": "Egypt",
             "abbr": "Egypt",
-            "flag": "🇪🇬",
+            "flag": "\ud83c\uddea\ud83c\uddec",
             "iso": "eg"
           }
         ],
@@ -388,13 +389,13 @@
           {
             "name": "Argentina",
             "abbr": "Argentina",
-            "flag": "🇦🇷",
+            "flag": "\ud83c\udde6\ud83c\uddf7",
             "iso": "ar"
           },
           {
             "name": "Cabo Verde",
             "abbr": "Cabo Verde",
-            "flag": "🇨🇻",
+            "flag": "\ud83c\udde8\ud83c\uddfb",
             "iso": "cv"
           }
         ],
@@ -407,13 +408,13 @@
           {
             "name": "Brazil",
             "abbr": "Brazil",
-            "flag": "🇧🇷",
+            "flag": "\ud83c\udde7\ud83c\uddf7",
             "iso": "br"
           },
           {
             "name": "Norway",
             "abbr": "Norway",
-            "flag": "🇳🇴",
+            "flag": "\ud83c\uddf3\ud83c\uddf4",
             "iso": "no"
           }
         ],
@@ -424,13 +425,13 @@
           {
             "name": "Mexico",
             "abbr": "Mexico",
-            "flag": "🇲🇽",
+            "flag": "\ud83c\uddf2\ud83c\uddfd",
             "iso": "mx"
           },
           {
             "name": "England",
             "abbr": "England",
-            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f",
             "iso": "gb-eng"
           }
         ],
@@ -441,13 +442,13 @@
           {
             "name": "Switzerland",
             "abbr": "Switzerland",
-            "flag": "🇨🇭",
+            "flag": "\ud83c\udde8\ud83c\udded",
             "iso": "ch"
           },
           {
             "name": "Colombia",
             "abbr": "Colombia",
-            "flag": "🇨🇴",
+            "flag": "\ud83c\udde8\ud83c\uddf4",
             "iso": "co"
           }
         ],
@@ -458,13 +459,13 @@
           {
             "name": "Egypt",
             "abbr": "Egypt",
-            "flag": "🇪🇬",
+            "flag": "\ud83c\uddea\ud83c\uddec",
             "iso": "eg"
           },
           {
             "name": "Argentina",
             "abbr": "Argentina",
-            "flag": "🇦🇷",
+            "flag": "\ud83c\udde6\ud83c\uddf7",
             "iso": "ar"
           }
         ],
@@ -477,13 +478,13 @@
           {
             "name": "Norway",
             "abbr": "Norway",
-            "flag": "🇳🇴",
+            "flag": "\ud83c\uddf3\ud83c\uddf4",
             "iso": "no"
           },
           {
             "name": "England",
             "abbr": "England",
-            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f",
             "iso": "gb-eng"
           }
         ],
@@ -494,13 +495,13 @@
           {
             "name": "Switzerland",
             "abbr": "Switzerland",
-            "flag": "🇨🇭",
+            "flag": "\ud83c\udde8\ud83c\udded",
             "iso": "ch"
           },
           {
             "name": "Argentina",
             "abbr": "Argentina",
-            "flag": "🇦🇷",
+            "flag": "\ud83c\udde6\ud83c\uddf7",
             "iso": "ar"
           }
         ],
