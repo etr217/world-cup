@@ -19,7 +19,9 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: auto; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  .bracket-fit { margin: 0 auto; overflow: hidden; }
 
   .btn { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; transition: all .15s; }
   .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
@@ -28,10 +30,10 @@
   .btn-accent:hover { background: #3a85e0; color: #fff; }
 
   /* Leaderboard (center bottom) */
-  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 8px; margin-top: 8px; }
+  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); text-align: center; padding: 0 0 6px; margin-top: 6px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
-  .leaderboard { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .lb-row { display: grid; grid-template-columns: 22px 12px minmax(0, 0.55fr) minmax(120px, 3fr) 72px; gap: 8px; align-items: center; }
+  .leaderboard { display: flex; flex-direction: column; gap: 7px; width: 100%; }
+  .lb-row { display: grid; grid-template-columns: 18px 10px minmax(0, 0.5fr) minmax(72px, 2fr) 58px; gap: 5px; align-items: center; }
   .lb-rank {
     font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
     font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
@@ -89,7 +91,7 @@
   }
   .lb-score {
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--text);
@@ -101,8 +103,9 @@
 
   /* Bracket layout */
   .bracket-scroll {
-    padding: 18px 16px 80px 20px;
-    overflow-x: auto;
+    padding: 12px 10px 32px;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     z-index: 1;
     min-height: 100vh;
@@ -111,10 +114,9 @@
   .bracket-outer {
     display: grid;
     grid-template-columns: auto auto auto auto auto;
-    justify-content: space-between;
+    justify-content: center;
     align-items: stretch;
-    width: 100%;
-    min-width: 100%;
+    width: max-content;
     min-height: calc(100vh - 40px);
   }
   .half { display: flex; align-items: stretch; height: 100%; }
@@ -176,16 +178,16 @@
   .gap-col svg, .final-gap svg { position: absolute; top: 0; left: 0; overflow: visible; }
 
   /* Center */
-  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 500px; flex-shrink: 0; padding: 0 8px 0; height: 100%; align-self: stretch; }
-  .bracket-title { display: flex; flex-direction: column; align-items: center; text-align: center; width: calc(100% + 100px); margin: 4px -58px 10px; line-height: 0; }
-  .bracket-title img { width: 100%; max-width: 600px; height: 230px; object-fit: contain; display: block; }
-  .bracket-title span { font-family: 'Bebas Neue', sans-serif; display: block; font-size: 11px; letter-spacing: 2px; color: var(--accent); margin-top: 6px; }
-  .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 10px; align-self: stretch; }
-  .champ-card { background: linear-gradient(145deg,#1a2e1f,#152418); border: 2px solid #22c55e; border-radius: 10px; padding: 16px 10px; text-align: center; box-shadow: 0 0 20px rgba(34,197,94,0.2); width: 100%; }
-  .champ-trophy { font-size: 28px; }
-  .champ-flag   { font-size: 24px; margin-top: 5px; }
-  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; color: #4ade80; margin-top: 3px; }
-  .champ-empty  { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 280px; flex-shrink: 0; padding: 0 4px; height: 100%; align-self: stretch; }
+  .bracket-title { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin: 0 0 6px; line-height: 0; }
+  .bracket-title img { width: 100%; max-width: 260px; height: 100px; object-fit: contain; display: block; }
+  .bracket-title span { font-family: 'Bebas Neue', sans-serif; display: block; font-size: 10px; letter-spacing: 1.5px; color: var(--accent); margin-top: 4px; }
+  .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); text-align: center; padding: 2px 0 6px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 8px; align-self: stretch; }
+  .champ-card { background: linear-gradient(145deg,#1a2e1f,#152418); border: 2px solid #22c55e; border-radius: 8px; padding: 10px 8px; text-align: center; box-shadow: 0 0 16px rgba(34,197,94,0.2); width: 100%; }
+  .champ-trophy { font-size: 22px; }
+  .champ-flag   { font-size: 20px; margin-top: 4px; }
+  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 1.5px; color: #4ade80; margin-top: 2px; }
+  .champ-empty  { font-size: 9px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
 
   /* Toast */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 8px 18px; border-radius: 99px; z-index: 300; transition: transform .3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
@@ -205,7 +207,9 @@
 <body>
 
 <div class="bracket-scroll">
-  <div class="bracket-outer" id="bracket"></div>
+  <div class="bracket-fit" id="bracketFit">
+    <div class="bracket-outer" id="bracket"></div>
+  </div>
 </div>
 
 <div class="modal-bg" id="importModal">
@@ -706,7 +710,7 @@ function render() {
 // ── SCORING ───────────────────────────────────────────────────────────────────
 const ROUND_POINTS = [1, 2, 4, 8]; // R32, R16, QF, SF (per side)
 const FINAL_POINTS  = 16;
-const THIRD_POINTS  = 3;
+const THIRD_POINTS  = 8;
 
 function scoreFor(b) {
   let pts = 0;
@@ -883,7 +887,7 @@ function renderBracket() {
   const fc = document.createElement('div');
   fc.id = 'final-match';
   fc.className = 'match-block' + (isScheduleToday(FINAL_SCHEDULE) ? ' today' : '');
-  fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:12px;';
+  fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:8px;';
   display.final.teams.forEach((team, ti) => {
     const isPicked = display.final.winner === ti;
     const pickers  = dots ? bracketsPickedFinalWinner(team.name) : [];
@@ -921,7 +925,7 @@ function renderBracket() {
   // Third place match
   const tl = document.createElement('div');
   tl.className = 'center-label';
-  tl.style.marginTop = '14px';
+  tl.style.marginTop = '10px';
   tl.textContent = '3rd Place';
   center.appendChild(tl);
 
@@ -985,7 +989,7 @@ function renderBracket() {
   renderHalf(rh, 'right', display, dots, hypothetical);
   el.appendChild(rh);
 
-  requestAnimationFrame(drawLines);
+  requestAnimationFrame(() => { fitBracket(); drawLines(); });
 }
 
 function renderHalf(container, side, display, dots, hypothetical) {
@@ -1087,6 +1091,30 @@ function staggerVertX(fromX, toX, y1, y3, lineOff) {
   let pos = goingDown ? center - lineOff : center + lineOff;
   pos = Math.max(0, Math.min(gapW, pos));
   return ltr ? minX + pos : maxX - pos;
+}
+
+function fitBracket() {
+  const scroll = document.querySelector('.bracket-scroll');
+  const wrap = document.getElementById('bracketFit');
+  const bracket = document.getElementById('bracket');
+  if (!scroll || !wrap || !bracket) return;
+
+  bracket.style.transform = '';
+  bracket.style.transformOrigin = '';
+  wrap.style.width = '';
+  wrap.style.height = '';
+
+  const needed = bracket.offsetWidth;
+  const neededH = bracket.offsetHeight;
+  if (!needed) return;
+
+  const scale = Math.min(1, (scroll.clientWidth - 20) / needed);
+  if (scale < 1) {
+    wrap.style.width = (needed * scale) + 'px';
+    wrap.style.height = (neededH * scale) + 'px';
+    bracket.style.transform = `scale(${scale})`;
+    bracket.style.transformOrigin = 'top left';
+  }
 }
 
 function drawLines() {
@@ -1444,7 +1472,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImportModal();}
 
 let toastTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
-window.addEventListener('resize', () => requestAnimationFrame(drawLines));
+window.addEventListener('resize', () => requestAnimationFrame(() => { fitBracket(); drawLines(); }));
 loadAllBrackets();
 </script>
 </body>
