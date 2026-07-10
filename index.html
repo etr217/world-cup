@@ -267,10 +267,6 @@
   .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #4ade80; margin-top: 3px; }
   .champ-empty  { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
-  /* Toast */
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 8px 18px; border-radius: 99px; z-index: 300; transition: transform .3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
   /* Modal */
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
   .modal-bg.open { display: flex; }
@@ -310,7 +306,6 @@
   </div>
 </div>
 <input type="file" id="fileInput" accept=".json" style="display:none" onchange="onFilePicked(event)">
-<div class="toast" id="toast"></div>
 
 <script>
 // ── DATA ─────────────────────────────────────────────────────────────────────
@@ -1020,6 +1015,7 @@ function renderBracket() {
 
   const tm = display.third;
   const tc = document.createElement('div');
+  tc.id = 'third-match';
   tc.className = 'match-block' + (isScheduleToday(THIRD_SCHEDULE) ? ' today' : '');
   tc.style.cssText = 'display:flex;flex-direction:column;width:100%;';
   tm.teams.forEach((team, ti) => {
@@ -1246,33 +1242,50 @@ function drawHypotheticalLines(display) {
     const side = gap.dataset.side, isRight = side === 'right';
     const sfRi = COUNTS_SIDE.length - 1;
     const gapRect = gap.getBoundingClientRect();
-    const finalTi = side === 'left' ? 0 : 1;
+    const ti = side === 'left' ? 0 : 1;
 
     const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
     const finalMcs = document.querySelectorAll('#final-match > .mc');
-    if (!sfSlot || !finalMcs[finalTi]) return;
+    const thirdMcs = document.querySelectorAll('#third-match > .mc');
+    if (!sfSlot) return;
     const sfMcs = sfSlot.querySelectorAll('.mc');
 
     const rm = display[side][sfRi][0];
-    if (rm.winner === null || !sfMcs[rm.winner]) return;
+    if (rm.winner === null) return;
+    const loserIdx = 1 - rm.winner;
     const winnerName = rm.teams[rm.winner].name;
+    const loserName = rm.teams[loserIdx].name;
+
+    const segs = [];
 
     const finalMatch = display.final;
-    if (finalMatch.teams[finalTi].name !== winnerName) return;
-    if (finalMatch.winner === null) return;
-    if (finalMatch.teams[finalMatch.winner].name !== winnerName) return;
+    if (sfMcs[rm.winner] && finalMcs[ti]
+        && finalMatch.teams[ti].name === winnerName
+        && finalMatch.winner !== null
+        && finalMatch.teams[finalMatch.winner].name === winnerName) {
+      segs.push({ srcMc: sfMcs[rm.winner], dstMc: finalMcs[ti] });
+    }
 
-    const srcMc = sfMcs[rm.winner];
-    const dstMc = finalMcs[finalTi];
-    const srcY = midY(srcMc, gapRect);
-    const dstY = midY(dstMc, gapRect);
-    const { fromX, toX } = finalGapX(isRight, srcMc, dstMc, gapRect);
-    const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
-    const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
-    const { lineOff } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1, fromX, toX);
-    const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff);
+    const thirdMatch = display.third;
+    if (sfMcs[loserIdx] && thirdMcs[ti]
+        && thirdMatch.teams[ti].name === loserName) {
+      segs.push({ srcMc: sfMcs[loserIdx], dstMc: thirdMcs[ti] });
+    }
 
-    path(svg, fromX - xOff, srcY, xVert - xOff, dstY, toX - xOff, HYPO_LINE_COLOR, 2);
+    if (!segs.length) return;
+
+    const coords = segs.map(s => {
+      const { fromX, toX } = finalGapX(isRight, s.srcMc, s.dstMc, gapRect);
+      return { fromX, toX, srcY: midY(s.srcMc, gapRect), dstY: midY(s.dstMc, gapRect) };
+    });
+    const { svg, xOff } = makeSpanSVGFromCoords(gap, gapRect, coords);
+
+    coords.forEach(c => {
+      const bandTop = Math.min(c.srcY, c.dstY), bandBot = Math.max(c.srcY, c.dstY);
+      const { lineOff } = lineStagger(c.srcY, c.dstY, bandTop, bandBot, 0, 1, c.fromX, c.toX);
+      const xVert = staggerVertX(c.fromX, c.toX, c.srcY, c.dstY, lineOff);
+      path(svg, c.fromX - xOff, c.srcY, xVert - xOff, c.dstY, c.toX - xOff, HYPO_LINE_COLOR, 2);
+    });
   });
 }
 
@@ -1330,46 +1343,62 @@ function drawAllLines() {
     }
   });
 
-  // Final gaps
+  // Final gaps: SF winner → final, SF loser → third place
   el.querySelectorAll('.final-gap').forEach(gap => {
     const side = gap.dataset.side, isRight = side==='right';
     const sfRi = COUNTS_SIDE.length-1;
     const gapRect = gap.getBoundingClientRect();
-    const finalTi = side==='left'?0:1;
+    const ti = side==='left'?0:1;
 
     const sfSlot = el.querySelector(`.team-slot[data-side="${side}"][data-ri="${sfRi}"][data-mi="0"]`);
     const finalMcs = document.querySelectorAll('#final-match > .mc');
-    if (!sfSlot || !finalMcs[finalTi]) return;
+    const thirdMcs = document.querySelectorAll('#third-match > .mc');
+    if (!sfSlot) return;
     const sfMcs = sfSlot.querySelectorAll('.mc');
 
-    // Only draw if actual result has a SF winner
     const rm = results[side][sfRi][0];
-    if (rm.winner === null || !sfMcs[rm.winner]) return;
+    if (rm.winner === null) return;
+    const loserIdx = 1 - rm.winner;
     const actualWinnerName = rm.teams[rm.winner].name;
-    const srcMc = sfMcs[rm.winner];
-    const dstMc = finalMcs[finalTi];
-    const srcY = midY(srcMc, gapRect);
-    const dstY = midY(dstMc, gapRect);
-    const { fromX, toX } = finalGapX(isRight, srcMc, dstMc, gapRect);
-    const { svg, xOff } = makeSpanSVG(gap, gapRect, fromX, toX);
+    const actualLoserName = rm.teams[loserIdx].name;
 
-    const pickers = brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName);
-    if (!pickers.length) {
-      const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
-      const { lineOff } = lineStagger(srcY, dstY, bandTop, bandBot, 0, 1, fromX, toX);
-      const xVert = staggerVertX(fromX, toX, srcY, dstY, lineOff);
-      path(svg, fromX - xOff, srcY, xVert - xOff, dstY, toX - xOff, NO_PICKER_LINE_COLOR, 2, true);
-      return;
+    const segs = [];
+    if (sfMcs[rm.winner] && finalMcs[ti]) {
+      segs.push({ srcMc: sfMcs[rm.winner], dstMc: finalMcs[ti], pickName: actualWinnerName });
     }
+    if (sfMcs[loserIdx] && thirdMcs[ti]
+        && results.third.teams[ti]?.name === actualLoserName) {
+      segs.push({ srcMc: sfMcs[loserIdx], dstMc: thirdMcs[ti], pickName: actualWinnerName });
+    }
+    if (!segs.length) return;
 
-    const bandTop = Math.min(srcY, dstY), bandBot = Math.max(srcY, dstY);
-    const totalOff = (pickers.length - 1) * LINE_SPREAD;
-    pickers.forEach((b, i) => {
-      const off = -totalOff / 2 + i * LINE_SPREAD;
-      const y1 = srcY + off, y3 = dstY + off;
-      const { lineOff } = lineStagger(y1, y3, bandTop, bandBot, off, pickers.length, fromX, toX);
-      const xVert = staggerVertX(fromX, toX, y1, y3, lineOff);
-      path(svg, fromX - xOff, y1, xVert - xOff, y3, toX - xOff, strokeColor(b.color), 2);
+    const coords = segs.map(s => {
+      const { fromX, toX } = finalGapX(isRight, s.srcMc, s.dstMc, gapRect);
+      return {
+        fromX, toX,
+        srcY: midY(s.srcMc, gapRect),
+        dstY: midY(s.dstMc, gapRect),
+        pickers: brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === s.pickName),
+      };
+    });
+    const { svg, xOff } = makeSpanSVGFromCoords(gap, gapRect, coords);
+
+    coords.forEach(c => {
+      const bandTop = Math.min(c.srcY, c.dstY), bandBot = Math.max(c.srcY, c.dstY);
+      if (!c.pickers.length) {
+        const { lineOff } = lineStagger(c.srcY, c.dstY, bandTop, bandBot, 0, 1, c.fromX, c.toX);
+        const xVert = staggerVertX(c.fromX, c.toX, c.srcY, c.dstY, lineOff);
+        path(svg, c.fromX - xOff, c.srcY, xVert - xOff, c.dstY, c.toX - xOff, NO_PICKER_LINE_COLOR, 2, true);
+        return;
+      }
+      const totalOff = (c.pickers.length - 1) * LINE_SPREAD;
+      c.pickers.forEach((b, i) => {
+        const off = -totalOff / 2 + i * LINE_SPREAD;
+        const y1 = c.srcY + off, y3 = c.dstY + off;
+        const { lineOff } = lineStagger(y1, y3, bandTop, bandBot, off, c.pickers.length, c.fromX, c.toX);
+        const xVert = staggerVertX(c.fromX, c.toX, y1, y3, lineOff);
+        path(svg, c.fromX - xOff, y1, xVert - xOff, y3, c.toX - xOff, strokeColor(b.color), 2);
+      });
     });
   });
 }
@@ -1386,8 +1415,14 @@ function makeSVG(gap, gapRect) {
   gap.innerHTML=''; gap.appendChild(svg); return { svg, xOff: 0 };
 }
 function makeSpanSVG(gap, gapRect, fromX, toX) {
-  const minX = Math.min(fromX, toX, 0);
-  const maxX = Math.max(fromX, toX, gapRect.width);
+  return makeSpanSVGFromCoords(gap, gapRect, [{ fromX, toX }]);
+}
+function makeSpanSVGFromCoords(gap, gapRect, coords) {
+  let minX = 0, maxX = gapRect.width;
+  coords.forEach(c => {
+    minX = Math.min(minX, c.fromX, c.toX);
+    maxX = Math.max(maxX, c.fromX, c.toX);
+  });
   const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.setAttribute('width', maxX - minX);
   svg.setAttribute('height', gapRect.height);
@@ -1545,8 +1580,7 @@ function downloadSnapshot() {
 document.getElementById('importModal').addEventListener('click',e=>{if(e.target===document.getElementById('importModal'))closeImportModal();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImportModal();});
 
-let toastTimer;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+function showToast(_msg) {}
 window.addEventListener('resize', () => requestAnimationFrame(drawLines));
 loadAllBrackets();
 </script>
