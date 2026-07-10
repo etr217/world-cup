@@ -21,18 +21,18 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
+  html, body { min-height: 100%; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: auto; }
 
   .bracket-fit {
     display: grid;
     grid-template-columns: auto auto var(--GAP-W) auto var(--GAP-W) auto auto;
-    grid-template-rows: minmax(0, 1fr);
+    grid-template-rows: minmax(min-content, 1fr);
     width: max-content;
     margin: 0 auto;
     overflow: visible;
-    flex: 1;
-    min-height: 0;
+    flex: 1 0 auto;
+    min-height: calc(100vh - 20px);
     align-content: stretch;
   }
   #bracket { display: contents; }
@@ -130,26 +130,25 @@
   .lb-max { font-size: 8px; font-weight: 600; color: var(--muted); }
   .legend-empty { color: var(--muted); font-style: italic; font-size: 9px; }
 
-  /* Bracket layout */
+  /* Bracket layout — stretch to fill viewport, never shrink below content */
   .bracket-scroll {
     padding: 10px 16px 10px 20px;
     overflow-x: auto;
     position: relative;
     z-index: 1;
-    height: 100vh;
     min-height: 100vh;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
   }
-  .half { display: flex; align-items: stretch; height: 100%; min-height: 0; }
-  .half-early { display: flex; align-items: stretch; height: 100%; min-height: 0; }
-  .half-sf { display: flex; align-items: stretch; height: 100%; min-height: 0; }
+  .half { display: flex; align-items: stretch; height: 100%; min-height: min-content; }
+  .half-early { display: flex; align-items: stretch; height: 100%; min-height: min-content; }
+  .half-sf { display: flex; align-items: stretch; height: 100%; min-height: min-content; }
 
-  .round-col { display: flex; flex-direction: column; width: max-content; min-width: 80px; flex-shrink: 0; align-self: stretch; height: 100%; min-height: 0; }
+  .round-col { display: flex; flex-direction: column; width: max-content; min-width: 80px; flex-shrink: 0; align-self: stretch; height: 100%; min-height: min-content; }
   .round-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; flex-shrink: 0; }
-  .round-slots { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-  .team-slot { display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: 0; }
+  .round-slots { display: flex; flex-direction: column; flex: 1 0 auto; min-height: min-content; }
+  .team-slot { display: flex; flex-direction: column; justify-content: center; flex: 1 1 auto; min-height: min-content; }
 
   .match-pair { display: flex; flex-direction: column; width: 100%; flex-shrink: 0; }
 
@@ -208,7 +207,7 @@
     flex-shrink: 0;
     padding: 0 8px;
     align-self: stretch;
-    min-height: 0;
+    min-height: min-content;
     overflow: visible;
   }
   .bracket-title {
