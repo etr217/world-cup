@@ -16,12 +16,41 @@
     --accent:  #4d9bff;
     --CARD-H:  38px;
     --GAP-W:   28px;
+    --LOGO-H:  155px;
+    --LOGO-SPILL: 72px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: auto; }
 
-  .bracket-fit { margin: 0 auto; overflow: hidden; }
+  .bracket-fit {
+    display: grid;
+    grid-template-columns: auto auto var(--GAP-W) auto var(--GAP-W) auto auto;
+    grid-template-rows: minmax(0, 1fr);
+    width: max-content;
+    margin: 0 auto;
+    overflow: visible;
+    flex: 1;
+    min-height: 0;
+    align-content: stretch;
+  }
+  #bracket { display: contents; }
+  #bracket > .half-early.left { grid-column: 1; grid-row: 1; align-self: stretch; }
+  #bracket > .half-sf.left { grid-column: 2; grid-row: 1; align-self: stretch; }
+  #bracket > .final-gap[data-side="left"] { grid-column: 3; grid-row: 1; align-self: stretch; }
+  #bracket > .center-col { grid-column: 4; grid-row: 1; align-self: stretch; }
+  #bracket > .final-gap[data-side="right"] { grid-column: 5; grid-row: 1; align-self: stretch; }
+  #bracket > .half-sf.right { grid-column: 6; grid-row: 1; align-self: stretch; }
+  #bracket > .half-early.right { grid-column: 7; grid-row: 1; align-self: stretch; }
+  .rankings-section {
+    grid-column: 2 / 7;
+    grid-row: 1;
+    align-self: end;
+    background: var(--bg);
+    position: relative;
+    z-index: 2;
+  }
 
   .btn { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; transition: all .15s; }
   .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
@@ -29,40 +58,40 @@
   .btn-accent { background: var(--accent); color: #fff; font-weight: 700; }
   .btn-accent:hover { background: #3a85e0; color: #fff; }
 
-  /* Leaderboard (center bottom) */
-  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); text-align: center; padding: 0 0 6px; margin-top: 6px; }
+  /* Leaderboard (below SF) */
+  .leaderboard-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 0 0 6px; }
   .leaderboard-panel { width: 100%; padding-top: 0; }
-  .leaderboard { display: flex; flex-direction: column; gap: 7px; width: 100%; }
-  .lb-row { display: grid; grid-template-columns: 18px 10px minmax(0, 0.5fr) minmax(72px, 2fr) 58px; gap: 5px; align-items: center; }
+  .leaderboard { display: flex; flex-direction: column; gap: 3px; width: 100%; }
+  .lb-row { display: grid; grid-template-columns: 14px 8px minmax(0, 0.45fr) minmax(48px, 1fr) 46px; gap: 4px; align-items: center; }
   .lb-rank {
-    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
     font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
   }
   .lb-rank.gold   { color: #f5c518; }
   .lb-rank.silver { color: #adb5bd; }
   .lb-rank.bronze { color: #cd7f32; }
-  .lb-dot  { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .lb-dot  { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
   .lb-name {
-    font-size: 12px; font-weight: 700; color: var(--text);
-    line-height: 1.25; cursor: pointer; min-width: 0;
+    font-size: 9px; font-weight: 600; color: var(--text);
+    line-height: 1.15; cursor: pointer; min-width: 0;
   }
   .lb-name:hover { color: var(--accent); }
   .lb-row.active .lb-name { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
   .lb-back-btn {
-    display: block; width: 100%; margin-bottom: 8px;
-    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
-    letter-spacing: 0.5px; text-transform: uppercase;
-    padding: 5px 8px; border-radius: 4px;
-    border: 1.5px solid var(--accent); background: transparent;
+    display: block; width: 100%; margin-bottom: 4px;
+    font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600;
+    letter-spacing: 0.4px; text-transform: uppercase;
+    padding: 3px 6px; border-radius: 3px;
+    border: 1px solid var(--accent); background: transparent;
     color: var(--accent); cursor: pointer;
   }
   .lb-back-btn:hover { background: var(--accent); color: #fff; }
   .lb-bar-track {
     position: relative;
-    height: 26px;
+    height: 12px;
     background: #2a3142;
     border: 1px solid #4a5568;
-    border-radius: 2px;
+    border-radius: 1px;
     overflow: hidden;
   }
   .lb-bar-track::before {
@@ -82,52 +111,47 @@
     position: relative;
     z-index: 1;
     height: 100%;
-    min-width: 3px;
-    border-radius: 0 2px 2px 0;
+    min-width: 2px;
+    border-radius: 0 1px 1px 0;
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-left: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: width 0.35s ease;
   }
   .lb-score {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--text);
     text-align: right;
     white-space: nowrap;
   }
-  .lb-max { font-size: 12px; font-weight: 600; color: var(--muted); }
-  .legend-empty { color: var(--muted); font-style: italic; font-size: 12px; }
+  .lb-max { font-size: 8px; font-weight: 600; color: var(--muted); }
+  .legend-empty { color: var(--muted); font-style: italic; font-size: 9px; }
 
   /* Bracket layout */
   .bracket-scroll {
-    padding: 12px 10px 32px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    padding: 10px 16px 10px 20px;
+    overflow-x: auto;
     position: relative;
     z-index: 1;
+    height: 100vh;
     min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
+  .half { display: flex; align-items: stretch; height: 100%; min-height: 0; }
+  .half-early { display: flex; align-items: stretch; height: 100%; min-height: 0; }
+  .half-sf { display: flex; align-items: stretch; height: 100%; min-height: 0; }
 
-  .bracket-outer {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto;
-    justify-content: center;
-    align-items: stretch;
-    width: max-content;
-    min-height: calc(100vh - 40px);
-  }
-  .half { display: flex; align-items: stretch; height: 100%; }
-  .half.right { flex-direction: row-reverse; }
-
-  .round-col { display: flex; flex-direction: column; width: max-content; min-width: 80px; flex-shrink: 0; height: 100%; align-self: stretch; }
+  .round-col { display: flex; flex-direction: column; width: max-content; min-width: 80px; flex-shrink: 0; align-self: stretch; height: 100%; min-height: 0; }
   .round-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; flex-shrink: 0; }
   .round-slots { display: flex; flex-direction: column; flex: 1; min-height: 0; }
   .team-slot { display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: 0; }
 
-  .match-pair { display: flex; flex-direction: column; width: 100%; }
+  .match-pair { display: flex; flex-direction: column; width: 100%; flex-shrink: 0; }
 
   /* Team row */
   .mc {
@@ -155,16 +179,13 @@
 
   /* Team name row inside the card */
   .mc-content { display: flex; align-items: center; gap: 5px; width: 100%; padding: 8px 8px 2px; }
-  .half.right .mc-content { flex-direction: row-reverse; }
 
   /* Dot row inside the card, below the team name */
   .dot-row { display: flex; flex-direction: row; gap: 3px; padding: 0 8px 5px; }
-  .half.right .dot-row { justify-content: flex-end; }
   .pick-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
   .flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
   .tname { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; color: var(--text); flex: 1; }
-  .half.right .tname { text-align: right; }
   .pick-check { font-size: 9px; color: #9ca3af; flex-shrink: 0; }
   .match-date { font-size:9px; color:var(--muted); letter-spacing:0.3px; text-align:center; padding:2px 0 2px; opacity:0.8; }
   .match-date.today { color: #fb923c; opacity: 1; font-weight: 600; }
@@ -172,22 +193,80 @@
   .match-block.today { outline: 2.5px solid #fb923c; outline-offset: 2px; border-radius: 5px; }
 
   /* Gap cols */
-  .gap-col, .final-gap { flex-shrink: 0; position: relative; overflow: visible; align-self: stretch; height: 100%; }
+  .gap-col, .final-gap { flex-shrink: 0; position: relative; overflow: visible; align-self: stretch; }
   .gap-col { width: var(--GAP-W); }
   .final-gap { width: var(--GAP-W); }
   .gap-col svg, .final-gap svg { position: absolute; top: 0; left: 0; overflow: visible; }
 
-  /* Center */
-  .center-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 280px; flex-shrink: 0; padding: 0 4px; height: 100%; align-self: stretch; }
-  .bracket-title { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin: 0 0 6px; line-height: 0; }
-  .bracket-title img { width: 100%; max-width: 260px; height: 100px; object-fit: contain; display: block; }
-  .bracket-title span { font-family: 'Bebas Neue', sans-serif; display: block; font-size: 10px; letter-spacing: 1.5px; color: var(--accent); margin-top: 4px; }
-  .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: 1.5px; color: var(--accent); text-align: center; padding: 2px 0 6px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 8px; align-self: stretch; }
-  .champ-card { background: linear-gradient(145deg,#1a2e1f,#152418); border: 2px solid #22c55e; border-radius: 8px; padding: 10px 8px; text-align: center; box-shadow: 0 0 16px rgba(34,197,94,0.2); width: 100%; }
-  .champ-trophy { font-size: 22px; }
-  .champ-flag   { font-size: 20px; margin-top: 4px; }
-  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 1.5px; color: #4ade80; margin-top: 2px; }
-  .champ-empty  { font-size: 9px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+  /* Center — 3 zones: final above SF, champ aligned with SF, third below SF */
+  .center-col {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    align-items: center;
+    justify-items: center;
+    width: max-content;
+    flex-shrink: 0;
+    padding: 0 8px;
+    align-self: stretch;
+    min-height: 0;
+    overflow: visible;
+  }
+  .bracket-title {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: start;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: calc(100% + 2 * var(--LOGO-SPILL));
+    margin: 0 calc(-1 * var(--LOGO-SPILL));
+    line-height: 0;
+    position: relative;
+    z-index: 2;
+  }
+  .bracket-title img { width: 100%; height: var(--LOGO-H); object-fit: contain; display: block; }
+  .center-final {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: end;
+    justify-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .champ-card {
+    grid-row: 2;
+    grid-column: 1;
+    background: linear-gradient(145deg,#1a2e1f,#152418);
+    border: 2px solid #22c55e;
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(34,197,94,0.2);
+    width: 100%;
+  }
+  .center-third {
+    grid-row: 3;
+    grid-column: 1;
+    align-self: start;
+    justify-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 10px;
+  }
+  .center-label { font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); text-align: center; padding: 3px 0 8px; border-bottom: 1px solid var(--border); width: 100%; margin-bottom: 10px; align-self: stretch; }
+  .champ-trophy { font-size: 26px; }
+  .champ-flag   { font-size: 22px; margin-top: 5px; }
+  .champ-name   { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #4ade80; margin-top: 3px; }
+  .champ-empty  { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
   /* Toast */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 8px 18px; border-radius: 99px; z-index: 300; transition: transform .3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
@@ -208,7 +287,11 @@
 
 <div class="bracket-scroll">
   <div class="bracket-fit" id="bracketFit">
-    <div class="bracket-outer" id="bracket"></div>
+    <div id="bracket"></div>
+    <div class="rankings-section">
+      <div class="leaderboard-title" id="lbTitle">Rankings</div>
+      <div class="leaderboard-panel" id="legendBar"></div>
+    </div>
   </div>
 </div>
 
@@ -276,7 +359,6 @@ const TEAM_META = {
 };
 const R32_LEFT  = [["South Africa","Canada"],["Netherlands","Morocco"],["Germany","Paraguay"],["France","Sweden"],["Belgium","Senegal"],["USA","Bosnia & Hz"],["Spain","Austria"],["Portugal","Croatia"]];
 const R32_RIGHT = [["Brazil","Japan"],["Côte d'Ivoire","Norway"],["Mexico","Ecuador"],["England","DR Congo"],["Switzerland","Algeria"],["Colombia","Ghana"],["Australia","Egypt"],["Argentina","Cabo Verde"]];
-const ROUND_LABELS = ["Round of 32","Round of 16","Quarter-Finals","Semi-Finals"];
 const COUNTS_SIDE  = [8, 4, 2, 1];
 
 const R32_SCHEDULE = {
@@ -704,6 +786,8 @@ function bracketsPickedFinalWinner(teamName) {
 // ── RENDER ───────────────────────────────────────────────────────────────────
 function render() {
   renderBracket();
+  const lbTitle = document.getElementById('lbTitle');
+  if (lbTitle) lbTitle.textContent = viewingBracketIdx !== null ? brackets[viewingBracketIdx].name : 'Rankings';
   renderLegend();
 }
 
@@ -855,11 +939,16 @@ function renderBracket() {
   const dots = viewingBracketIdx === null;
   const hypothetical = !dots;
 
-  // Left half
-  const lh = document.createElement('div');
-  lh.className = 'half left';
-  renderHalf(lh, 'left', display, dots, hypothetical);
-  el.appendChild(lh);
+  // Left half — early rounds + SF in separate grid columns
+  const lhEarly = document.createElement('div');
+  lhEarly.className = 'half-early left';
+  renderHalfEarly(lhEarly, 'left', display, dots, hypothetical);
+  el.appendChild(lhEarly);
+
+  const lhSf = document.createElement('div');
+  lhSf.className = 'half-sf left';
+  renderHalfSf(lhSf, 'left', display, dots, hypothetical);
+  el.appendChild(lhSf);
 
   // Left final gap
   const lg = document.createElement('div');
@@ -875,19 +964,18 @@ function renderBracket() {
   title.innerHTML = '<img src="assets/wc26-bracket-logo.svg" alt="FIFA World Cup 2026 Bracket Challenge">';
   center.appendChild(title);
 
-  const cl = document.createElement('div');
-  cl.className = 'center-label'; cl.textContent = 'Final';
-  center.appendChild(cl);
+  const finalWrap = document.createElement('div');
+  finalWrap.className = 'center-final';
 
   const finalDateEl = document.createElement('div');
   finalDateEl.className = 'match-date' + (isScheduleToday(FINAL_SCHEDULE) ? ' today' : '');
   finalDateEl.textContent = FINAL_SCHEDULE;
-  center.appendChild(finalDateEl);
+  finalWrap.appendChild(finalDateEl);
 
   const fc = document.createElement('div');
   fc.id = 'final-match';
   fc.className = 'match-block' + (isScheduleToday(FINAL_SCHEDULE) ? ' today' : '');
-  fc.style.cssText = 'display:flex;flex-direction:column;width:100%;margin-bottom:8px;';
+  fc.style.cssText = 'display:flex;flex-direction:column;width:100%;';
   display.final.teams.forEach((team, ti) => {
     const isPicked = display.final.winner === ti;
     const pickers  = dots ? bracketsPickedFinalWinner(team.name) : [];
@@ -912,7 +1000,8 @@ function renderBracket() {
     attachActualPick(row, display.final, ti, 'final', pickActualFinal, clearActualFinal);
     fc.appendChild(row);
   });
-  center.appendChild(fc);
+  finalWrap.appendChild(fc);
+  center.appendChild(finalWrap);
 
   const champ = display.champion;
   const cc = document.createElement('div');
@@ -922,17 +1011,13 @@ function renderBracket() {
     : `<div class="champ-trophy">🏆</div><div class="champ-empty">No champion yet</div>`;
   center.appendChild(cc);
 
-  // Third place match
-  const tl = document.createElement('div');
-  tl.className = 'center-label';
-  tl.style.marginTop = '10px';
-  tl.textContent = '3rd Place';
-  center.appendChild(tl);
+  const thirdWrap = document.createElement('div');
+  thirdWrap.className = 'center-third';
 
   const thirdDateEl = document.createElement('div');
   thirdDateEl.className = 'match-date' + (isScheduleToday(THIRD_SCHEDULE) ? ' today' : '');
   thirdDateEl.textContent = THIRD_SCHEDULE;
-  center.appendChild(thirdDateEl);
+  thirdWrap.appendChild(thirdDateEl);
 
   const tm = display.third;
   const tc = document.createElement('div');
@@ -964,17 +1049,8 @@ function renderBracket() {
     attachActualPick(row, tm, ti, 'third', pickActualThird, clearActualThird);
     tc.appendChild(row);
   });
-  center.appendChild(tc);
-
-  const lbTitle = document.createElement('div');
-  lbTitle.className = 'leaderboard-title';
-  lbTitle.textContent = viewingBracketIdx !== null ? brackets[viewingBracketIdx].name : 'Rankings';
-  center.appendChild(lbTitle);
-
-  const legendBar = document.createElement('div');
-  legendBar.className = 'leaderboard-panel';
-  legendBar.id = 'legendBar';
-  center.appendChild(legendBar);
+  thirdWrap.appendChild(tc);
+  center.appendChild(thirdWrap);
 
   el.appendChild(center);
 
@@ -983,89 +1059,113 @@ function renderBracket() {
   rg.className = 'final-gap'; rg.dataset.side = 'right';
   el.appendChild(rg);
 
-  // Right half
-  const rh = document.createElement('div');
-  rh.className = 'half right';
-  renderHalf(rh, 'right', display, dots, hypothetical);
-  el.appendChild(rh);
+  // Right half — SF + early rounds in separate grid columns
+  const rhSf = document.createElement('div');
+  rhSf.className = 'half-sf right';
+  renderHalfSf(rhSf, 'right', display, dots, hypothetical);
+  el.appendChild(rhSf);
 
-  requestAnimationFrame(() => { fitBracket(); drawLines(); });
+  const rhEarly = document.createElement('div');
+  rhEarly.className = 'half-early right';
+  renderHalfEarly(rhEarly, 'right', display, dots, hypothetical);
+  el.appendChild(rhEarly);
+
+  requestAnimationFrame(drawLines);
+}
+
+function renderRoundCol(container, side, ri, display, dots, hypothetical) {
+  const count = COUNTS_SIDE[ri];
+  const col = document.createElement('div');
+  col.className = 'round-col';
+  col.dataset.side = side; col.dataset.ri = ri;
+
+  const slots = document.createElement('div');
+  slots.className = 'round-slots';
+
+  for (let mi = 0; mi < count; mi++) {
+    const slot = document.createElement('div');
+    slot.className = 'team-slot';
+    slot.dataset.side = side; slot.dataset.ri = ri; slot.dataset.mi = mi;
+
+    const schedules = [R32_SCHEDULE, R16_SCHEDULE, QF_SCHEDULE, SF_SCHEDULE];
+    const sched = schedules[ri]?.[side]?.[mi];
+    if (sched) {
+      const dateEl = document.createElement('div');
+      dateEl.className = 'match-date' + (isScheduleToday(sched) ? ' today' : '');
+      dateEl.textContent = sched + ' PT';
+      slot.appendChild(dateEl);
+    }
+
+    const pair = document.createElement('div');
+    pair.className = 'match-pair' + (sched && isScheduleToday(sched) ? ' today' : '');
+
+    const match = display[side][ri][mi];
+    const actualMatch = results[side][ri][mi];
+    match.teams.forEach((team, ti) => {
+      const isPicked = match.winner === ti;
+      const pickers  = dots && team.name !== 'TBD' ? bracketsPickedWinner(side, ri, mi, team.name) : [];
+
+      const mc = document.createElement('div');
+      mc.className = mcClasses(match, ti, actualMatch, hypothetical, actualPickKey(side, ri, mi), side, ri);
+
+      const content = document.createElement('div');
+      content.className = 'mc-content';
+      content.innerHTML = `<span class="flag">${team.flag}</span><span class="tname">${team.abbr||team.name||''}</span>${isPicked?'<span class="pick-check">✓</span>':''}`;
+      mc.appendChild(content);
+
+      if (pickers.length) {
+        const dotRow = document.createElement('div');
+        dotRow.className = 'dot-row';
+        pickers.forEach(p => {
+          const d = document.createElement('div');
+          d.className = 'pick-dot';
+          d.style.cssText = colorBgStyle(p.color);
+          dotRow.appendChild(d);
+        });
+        mc.appendChild(dotRow);
+      }
+
+      attachActualPick(mc, match, ti, actualPickKey(side, ri, mi), (t) => pickActualSide(side, ri, mi, t), () => clearActualSide(side, ri, mi));
+      pair.appendChild(mc);
+    });
+
+    slot.appendChild(pair);
+    slots.appendChild(slot);
+  }
+  col.appendChild(slots);
+  container.appendChild(col);
+}
+
+function appendGapCol(container, side, ri) {
+  const gap = document.createElement('div');
+  gap.className = 'gap-col';
+  gap.dataset.side = side; gap.dataset.ri = ri;
+  container.appendChild(gap);
+}
+
+function renderHalfEarly(container, side, display, dots, hypothetical) {
+  if (side === 'left') {
+    for (let ri = 0; ri < 3; ri++) {
+      if (ri > 0) appendGapCol(container, side, ri);
+      renderRoundCol(container, side, ri, display, dots, hypothetical);
+    }
+    appendGapCol(container, side, 3);
+  } else {
+    appendGapCol(container, side, 3);
+    for (let ri = 2; ri >= 0; ri--) {
+      renderRoundCol(container, side, ri, display, dots, hypothetical);
+      if (ri > 0) appendGapCol(container, side, ri);
+    }
+  }
+}
+
+function renderHalfSf(container, side, display, dots, hypothetical) {
+  renderRoundCol(container, side, 3, display, dots, hypothetical);
 }
 
 function renderHalf(container, side, display, dots, hypothetical) {
-  COUNTS_SIDE.forEach((count, ri) => {
-    if (ri > 0) {
-      const gap = document.createElement('div');
-      gap.className = 'gap-col';
-      gap.dataset.side = side; gap.dataset.ri = ri;
-      container.appendChild(gap);
-    }
-
-    const col = document.createElement('div');
-    col.className = 'round-col';
-    col.dataset.side = side; col.dataset.ri = ri;
-
-    const lbl = document.createElement('div');
-    lbl.className = 'round-label'; lbl.textContent = ROUND_LABELS[ri];
-    col.appendChild(lbl);
-
-    const slots = document.createElement('div');
-    slots.className = 'round-slots';
-
-    for (let mi = 0; mi < count; mi++) {
-      const slot = document.createElement('div');
-      slot.className = 'team-slot';
-      slot.dataset.side = side; slot.dataset.ri = ri; slot.dataset.mi = mi;
-
-      // Date label for all rounds
-      const schedules = [R32_SCHEDULE, R16_SCHEDULE, QF_SCHEDULE, SF_SCHEDULE];
-      const sched = schedules[ri]?.[side]?.[mi];
-      if (sched) {
-        const dateEl = document.createElement('div');
-        dateEl.className = 'match-date' + (isScheduleToday(sched) ? ' today' : '');
-        dateEl.textContent = sched + ' PT';
-        slot.appendChild(dateEl);
-      }
-
-      const pair = document.createElement('div');
-      pair.className = 'match-pair' + (sched && isScheduleToday(sched) ? ' today' : '');
-
-      const match = display[side][ri][mi];
-      const actualMatch = results[side][ri][mi];
-      match.teams.forEach((team, ti) => {
-        const isPicked = match.winner === ti;
-        const pickers  = dots && team.name !== 'TBD' ? bracketsPickedWinner(side, ri, mi, team.name) : [];
-
-        const mc = document.createElement('div');
-        mc.className = mcClasses(match, ti, actualMatch, hypothetical, actualPickKey(side, ri, mi), side, ri);
-
-        const content = document.createElement('div');
-        content.className = 'mc-content';
-        content.innerHTML = `<span class="flag">${team.flag}</span><span class="tname">${team.abbr||team.name||''}</span>${isPicked?'<span class="pick-check">✓</span>':''}`;
-        mc.appendChild(content);
-
-        if (pickers.length) {
-          const dotRow = document.createElement('div');
-          dotRow.className = 'dot-row';
-          pickers.forEach(p => {
-            const d = document.createElement('div');
-            d.className = 'pick-dot';
-            d.style.cssText = colorBgStyle(p.color);
-            dotRow.appendChild(d);
-          });
-          mc.appendChild(dotRow);
-        }
-
-        attachActualPick(mc, match, ti, actualPickKey(side, ri, mi), (t) => pickActualSide(side, ri, mi, t), () => clearActualSide(side, ri, mi));
-        pair.appendChild(mc);
-      });
-
-      slot.appendChild(pair);
-      slots.appendChild(slot);
-    }
-    col.appendChild(slots);
-    container.appendChild(col);
-  });
+  renderHalfEarly(container, side, display, dots, hypothetical);
+  renderHalfSf(container, side, display, dots, hypothetical);
 }
 
 // ── LINES ────────────────────────────────────────────────────────────────────
@@ -1091,30 +1191,6 @@ function staggerVertX(fromX, toX, y1, y3, lineOff) {
   let pos = goingDown ? center - lineOff : center + lineOff;
   pos = Math.max(0, Math.min(gapW, pos));
   return ltr ? minX + pos : maxX - pos;
-}
-
-function fitBracket() {
-  const scroll = document.querySelector('.bracket-scroll');
-  const wrap = document.getElementById('bracketFit');
-  const bracket = document.getElementById('bracket');
-  if (!scroll || !wrap || !bracket) return;
-
-  bracket.style.transform = '';
-  bracket.style.transformOrigin = '';
-  wrap.style.width = '';
-  wrap.style.height = '';
-
-  const needed = bracket.offsetWidth;
-  const neededH = bracket.offsetHeight;
-  if (!needed) return;
-
-  const scale = Math.min(1, (scroll.clientWidth - 20) / needed);
-  if (scale < 1) {
-    wrap.style.width = (needed * scale) + 'px';
-    wrap.style.height = (neededH * scale) + 'px';
-    bracket.style.transform = `scale(${scale})`;
-    bracket.style.transformOrigin = 'top left';
-  }
 }
 
 function drawLines() {
@@ -1472,7 +1548,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImportModal();}
 
 let toastTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
-window.addEventListener('resize', () => requestAnimationFrame(() => { fitBracket(); drawLines(); }));
+window.addEventListener('resize', () => requestAnimationFrame(drawLines));
 loadAllBrackets();
 </script>
 </body>
