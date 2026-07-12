@@ -489,7 +489,7 @@
             "iso": "gb-eng"
           }
         ],
-        "winner": null
+        "winner": 1
       },
       {
         "teams": [
@@ -506,21 +506,23 @@
             "iso": "ar"
           }
         ],
-        "winner": null
+        "winner": 1
       }
     ],
     [
       {
         "teams": [
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "England",
+            "abbr": "England",
+            "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "iso": "gb-eng"
           },
           {
-            "name": "TBD",
-            "abbr": "",
-            "flag": ""
+            "name": "Argentina",
+            "abbr": "Argentina",
+            "flag": "🇦🇷",
+            "iso": "ar"
           }
         ],
         "winner": null
