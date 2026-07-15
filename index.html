@@ -768,6 +768,17 @@ function getBracketFinalWinner(bData) {
   try { const m = bData.final; return m.winner !== null ? m.teams[m.winner].name : null; }
   catch { return null; }
 }
+/** True if the bracket had `loserName` reach the SF and then lose it. */
+function bracketPickedSfLoser(bData, side, loserName) {
+  try {
+    const sfRi = COUNTS_SIDE.length - 1;
+    const m = bData[side][sfRi][0];
+    if (!m || m.winner === null || !m.teams) return false;
+    const loserTi = m.teams.findIndex(t => t && t.name === loserName);
+    if (loserTi < 0) return false;
+    return m.winner !== loserTi;
+  } catch { return false; }
+}
 
 // Which brackets picked `teamName` as winner of (side, ri, mi)?
 function bracketsPickedWinner(side, ri, mi, teamName) {
@@ -1364,11 +1375,19 @@ function drawAllLines() {
 
     const segs = [];
     if (sfMcs[rm.winner] && finalMcs[ti]) {
-      segs.push({ srcMc: sfMcs[rm.winner], dstMc: finalMcs[ti], pickName: actualWinnerName });
+      segs.push({
+        srcMc: sfMcs[rm.winner],
+        dstMc: finalMcs[ti],
+        pickers: brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === actualWinnerName),
+      });
     }
     if (sfMcs[loserIdx] && thirdMcs[ti]
         && results.third.teams[ti]?.name === actualLoserName) {
-      segs.push({ srcMc: sfMcs[loserIdx], dstMc: thirdMcs[ti], pickName: actualWinnerName });
+      segs.push({
+        srcMc: sfMcs[loserIdx],
+        dstMc: thirdMcs[ti],
+        pickers: brackets.filter(b => bracketPickedSfLoser(b.data, side, actualLoserName)),
+      });
     }
     if (!segs.length) return;
 
@@ -1378,7 +1397,7 @@ function drawAllLines() {
         fromX, toX,
         srcY: midY(s.srcMc, gapRect),
         dstY: midY(s.dstMc, gapRect),
-        pickers: brackets.filter(b => getBracketWinner(b.data, side, sfRi, 0) === s.pickName),
+        pickers: s.pickers,
       };
     });
     const { svg, xOff } = makeSpanSVGFromCoords(gap, gapRect, coords);
