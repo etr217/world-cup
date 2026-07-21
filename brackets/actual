@@ -544,7 +544,7 @@
         "iso": "ar"
       }
     ],
-    "winner": null
+    "winner": 0
   },
   "third": {
     "teams": [
@@ -563,5 +563,10 @@
     ],
     "winner": 1
   },
-  "champion": null
+  "champion": {
+    "name": "Spain",
+    "abbr": "Spain",
+    "flag": "🇪🇸",
+    "iso": "es"
+  }
 }
